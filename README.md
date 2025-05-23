@@ -116,6 +116,7 @@ Wir freuen uns über Beiträge! So kannst du helfen:
 
 ## 🔗 Links
 
+- **Germando Docs (Live):** [docs.flimando.com](https://docs.flimando.com)
 - **Original Pelican:** [pelican.dev](https://pelican.dev)
 - **Pelican GitHub:** [github.com/pelican-dev/panel](https://github.com/pelican-dev/panel)
 - **Pelican Discord:** [discord.gg/pelican](https://discord.gg/pelican)
