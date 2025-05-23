@@ -1,0 +1,309 @@
+﻿<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germando Docs - Wings Konfiguration</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Germando Logo" class="logo">
+                    <h2>Germando Docs</h2>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">Theme wechseln</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Willkommen</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Panel</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="getting_started.html">Erste Schritte</a></li>
+                            <li><a href="webserver.html">Webserver-Konfiguration</a></li>
+                            <li><a href="panel_setup.html">Panel-Einrichtung</a></li>
+                            <li><a href="optional_config.html">Optionale Konfiguration</a></li>
+                            <li><a href="updating_panel.html">Panel aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Erweitert</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="advanced_setup.html">Redis</a></li>
+                            <li><a href="advanced_setup.html">MySQL</a></li>
+                            <li><a href="artisan_commands.html">Artisan-Befehle</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Wings</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="wings_installation.html">Wings installieren</a></li>
+                            <li><a href="wings_configuration.html" class="active">ZusÃ¤tzliche Konfiguration</a></li>
+                            <li><a href="wings_updating.html">Wings aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Anleitungen</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="docker_guide.html">Docker installieren</a></li>
+                            <li><a href="mounts_guide.html">Mounts verwenden</a></li>
+                            <li><a href="ssl_guide.html">SSL-Zertifikate erstellen</a></li>
+                            <li><a href="php_upgrade.html">PHP aktualisieren</a></li>
+                            <li><a href="database_hosts.html">Datenbank-Hosts</a></li>
+                            <li><a href="uninstalling.html">Deinstallation</a></li>
+                            <li><a href="easypanel.html">Easypanel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="troubleshooting.html">Fehlerbehebung</a></li>
+                    <li><a href="comparison.html">Vergleich</a></li>
+                    <li><a href="glossary.html">Glossar</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1>Wings Konfiguration</h1>
+            
+            <div class="alert alert-danger">
+                <strong>Gefahr:</strong> Dies sind erweiterte Konfigurationen für Wings. Sie riskieren, Wings zu beschädigen und Container unbrauchbar zu machen, wenn Sie etwas falsch konfigurieren. Fahren Sie nur fort, wenn Sie wissen, was jeder Konfigurationswert bewirkt.
+            </div>
+
+            <p>Sie müssen alle Änderungen auf Ihre Wings <code>config.yml</code> Datei unter <code>/etc/pelican</code> anwenden und Wings neu starten.</p>
+
+            <div class="section">
+                <h2>Private Registries</h2>
+                <p>Sie können diese Einstellungen verwenden, um sich bei (privaten) Docker-Registries zu authentifizieren, wenn Sie Images pullen.</p>
+                
+                <h3>Verfügbare Schlüssel</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Einstellungsschlüssel</th>
+                            <th>Standardwert</th>
+                            <th>Hinweise</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>name</td>
+                            <td>null</td>
+                            <td>Registry-Adresse</td>
+                        </tr>
+                        <tr>
+                            <td>username</td>
+                            <td>null</td>
+                            <td>Registry-Benutzername</td>
+                        </tr>
+                        <tr>
+                            <td>password</td>
+                            <td>null</td>
+                            <td>Registry-Passwort</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Verwendungsbeispiel</h3>
+                <pre><code>docker:
+  registries:
+    registry.example.com:
+      username: "registryusername"
+      password: "registrypassword"</code></pre>
+            </section>
+
+            <div class="section">
+                <h2>Benutzerdefinierte Netzwerkschnittstellen</h2>
+                <p>Sie können die Netzwerkschnittstelle ändern, die Wings für alle Container verwendet, indem Sie den Netzwerknamen bearbeiten; er ist standardmäßig auf <code>pelican_nw</code> gesetzt. Um beispielsweise den Docker-Host-Modus zu aktivieren, ändern Sie den Netzwerknamen auf <code>host</code>.</p>
+                
+                <div class="alert alert-warning">
+                    <strong>Warnung:</strong> Das Ändern des Netzwerkmodus auf <code>host</code> gewährt Pelican direkten Zugriff auf alle Maschinenschnittstellen und Panel-Benutzer können an jede IP oder jeden Port binden, auch wenn er nicht ihrem Container zugewiesen ist. Sie verlieren alle Vorteile der Docker-Netzwerkisolation. Es wird nicht für öffentliche Installationen empfohlen, die Server anderer Benutzer hosten.
+                </div>
+
+                <h3>Verwendungsbeispiel</h3>
+                <pre><code>docker:
+  network:
+    name: host
+    network_mode: host</code></pre>
+
+                <p>Nach den Änderungen stoppen die folgenden Befehle Wings, entfernen das Pelican-Netzwerk und starten Wings wieder. Auf eigenes Risiko ausführen.</p>
+                <pre><code>systemctl stop wings && docker network rm pelican_nw && systemctl start wings</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>Cloudflare Proxy aktivieren</h2>
+                <p>Cloudflare-Proxying der Wings ist nicht vorteilhaft, da Benutzer sich direkt mit der Maschine verbinden und jeden Cloudflare-Schutz umgehen. Daher wird Ihre Node-Maschinen-IP immer noch exponiert sein.</p>
+                
+                <p>Um den Cloudflare-Proxy zu aktivieren, müssen Sie den Wings-Port auf einen der Cloudflare HTTPS-Ports mit aktiviertem Caching ändern, wie z.B. 8443, da Cloudflare HTTP nur auf Port 8080 unterstützt. Wählen Sie Ihren Node im Admin Panel aus und ändern Sie auf der Einstellungsseite den Port.</p>
+                
+                <p>Sie können den SFTP-Port nicht über Cloudflare proxyen, es sei denn, Sie haben deren Enterprise-Plan. Server-Transfers werden höchstwahrscheinlich auch nicht funktionieren aufgrund von Cloudflares Request-Body-Limits.</p>
+            </div>
+
+            <div class="section">
+                <h2>Container PID Limit</h2>
+                <p>Sie können die Gesamtanzahl der Prozesse ändern, die in einem Container zu einem beliebigen Zeitpunkt aktiv sein können, indem Sie den <code>container_pid_limit</code> Wert ändern. Der Standardwert ist <code>512</code>. Sie können ihn auf <code>0</code> setzen, um das Limit vollständig zu deaktivieren. Dies wird jedoch nicht empfohlen, da das Limit bösartige Überlastung des Knotens verhindert.</p>
+
+                <h3>Verwendungsbeispiel</h3>
+                <pre><code>docker:
+  ...
+  container_pid_limit: 512
+  ...</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>Throttles Limits</h2>
+                <p>Sie können diese Einstellungen verwenden, um Throttling anzupassen oder vollständig zu deaktivieren.</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Einstellungsschlüssel</th>
+                            <th>Standardwert</th>
+                            <th>Hinweise</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>enabled</td>
+                            <td>true</td>
+                            <td>Ob der Throttler aktiviert ist oder nicht</td>
+                        </tr>
+                        <tr>
+                            <td>lines</td>
+                            <td>2000</td>
+                            <td>Gesamte Zeilen, die in einem gegebenen line_reset_interval Zeitraum ausgegeben werden können</td>
+                        </tr>
+                        <tr>
+                            <td>maximum_trigger_count</td>
+                            <td>5</td>
+                            <td>Anzahl der Male, die das Throttle-Limit ausgelöst werden kann, bevor der Server gestoppt wird</td>
+                        </tr>
+                        <tr>
+                            <td>line_reset_interval</td>
+                            <td>100</td>
+                            <td>Die Zeit, nach der die Anzahl der verarbeiteten Zeilen auf 0 zurückgesetzt wird</td>
+                        </tr>
+                        <tr>
+                            <td>decay_interval</td>
+                            <td>10000</td>
+                            <td>Zeit in Millisekunden, die vergehen muss, ohne das Throttle-Limit auszulösen, bevor die Trigger-Zählung verringert wird</td>
+                        </tr>
+                        <tr>
+                            <td>stop_grace_period</td>
+                            <td>15</td>
+                            <td>Zeit, die ein Server zum Stoppen haben darf, bevor er gewaltsam beendet wird, wenn er Output-Throttle auslöst</td>
+                        </tr>
+                        <tr>
+                            <td>write_limit</td>
+                            <td>0</td>
+                            <td>I/O-Schreiblimit für Backups auf die Festplatte auferlegen, 0 = unbegrenzt. Wert größer als 0 drosselt Schreibgeschwindigkeit auf den gesetzten Wert in MiB/s</td>
+                        </tr>
+                        <tr>
+                            <td>download_limit</td>
+                            <td>0</td>
+                            <td>Netzwerk-I/O-Leselimit für Archive auferlegen, 0 = unbegrenzt. Wert größer als 0 drosselt Lesegeschwindigkeit auf den gesetzten Wert in MiB/s</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Verwendungsbeispiel</h3>
+                <pre><code>throttles:
+  enabled: true
+  lines: 2000
+  maximum_trigger_count: 5
+  line_reset_interval: 100
+  decay_interval: 10000
+  stop_grace_period: 15</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>Installer Limits</h2>
+                <p>Definiert die Limits für die Installer-Container, die verhindern, dass der Installationsprozess eines Servers unbeabsichtigt mehr Ressourcen verbraucht als erwartet. Dies wird in Verbindung mit den definierten Limits des Servers verwendet. Welcher Wert auch immer höher ist, hat Vorrang in den Install-Containern.</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Einstellungsschlüssel</th>
+                            <th>Standardwert</th>
+                            <th>Hinweise</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>memory</td>
+                            <td>1024</td>
+                            <td>Die maximale Speichermenge, die der Install-Container verwenden kann, es sei denn, das Server-Speicherlimit ist höher als dieser Wert</td>
+                        </tr>
+                        <tr>
+                            <td>cpu</td>
+                            <td>100</td>
+                            <td>Die maximale CPU-Menge, die der Install-Container verwenden kann, es sei denn, das Server-CPU-Limit ist höher als dieser Wert</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Verwendungsbeispiel</h3>
+                <pre><code>installer_limits:
+  memory: 1024
+  cpu: 100</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>Andere Werte</h2>
+                <p>Häufiger diskutierte Werte.</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Einstellungsschlüssel</th>
+                            <th>Standardwert</th>
+                            <th>Hinweise</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>debug</td>
+                            <td>false</td>
+                            <td>Wings zwingen, im Debug-Modus zu laufen</td>
+                        </tr>
+                        <tr>
+                            <td>tmpfs_size</td>
+                            <td>100</td>
+                            <td>Die Größe des /tmp Verzeichnisses in MB, wenn es in einen Container gemountet wird</td>
+                        </tr>
+                        <tr>
+                            <td>websocket_log_count</td>
+                            <td>150</td>
+                            <td>Die Anzahl der Zeilen, die in der Konsole angezeigt werden</td>
+                        </tr>
+                        <tr>
+                            <td>detect_clean_exit_as_crash</td>
+                            <td>true</td>
+                            <td>Server als abgestürzt markieren, wenn er ohne Benutzerinteraktion gestoppt wird, z.B. ohne Drücken der Stopp-Taste</td>
+                        </tr>
+                        <tr>
+                            <td>(crash detection) timeout</td>
+                            <td>60</td>
+                            <td>Timeout zwischen Server-Abstürzen, das nicht dazu führt, dass der Server automatisch neu gestartet wird</td>
+                        </tr>
+                        <tr>
+                            <td>check_permissions_on_boot</td>
+                            <td>true</td>
+                            <td>Alle Dateiberechtigungen bei jedem Start überprüfen. Deaktivieren Sie dies, wenn Sie eine sehr große Anzahl von Dateien haben und der Server-Start beim Überprüfen der Berechtigungen hängt</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="wings_installation.html" class="nav-button prev">Wings installieren</a>
+                <a href="wings_updating.html" class="nav-button next">Wings aktualisieren</a>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
+
+

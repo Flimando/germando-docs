@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germando Docs - Docker Installation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Germando Logo" class="logo">
+                    <h2>Germando Docs</h2>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">Theme wechseln</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Willkommen</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Panel</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="getting_started.html">Erste Schritte</a></li>
+                            <li><a href="webserver.html">Webserver-Konfiguration</a></li>
+                            <li><a href="panel_setup.html">Panel-Einrichtung</a></li>
+                            <li><a href="optional_config.html">Optionale Konfiguration</a></li>
+                            <li><a href="updating_panel.html">Panel aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Erweitert</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="advanced_setup.html">Redis</a></li>
+                            <li><a href="advanced_setup.html">MySQL</a></li>
+                            <li><a href="artisan_commands.html">Artisan-Befehle</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Wings</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="wings_installation.html">Wings installieren</a></li>
+                            <li><a href="wings_configuration.html">ZusÃ¤tzliche Konfiguration</a></li>
+                            <li><a href="wings_updating.html">Wings aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Anleitungen</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="docker_guide.html" class="active">Docker installieren</a></li>
+                            <li><a href="mounts_guide.html">Mounts verwenden</a></li>
+                            <li><a href="ssl_guide.html">SSL-Zertifikate erstellen</a></li>
+                            <li><a href="php_upgrade.html">PHP aktualisieren</a></li>
+                            <li><a href="database_hosts.html">Datenbank-Hosts</a></li>
+                            <li><a href="uninstalling.html">Deinstallation</a></li>
+                            <li><a href="easypanel.html">Easypanel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="troubleshooting.html">Fehlerbehebung</a></li>
+                    <li><a href="comparison.html">Vergleich</a></li>
+                    <li><a href="glossary.html">Glossar</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1>Docker Installation</h1>
+            
+            <p>Docker ist erforderlich, damit Wings Spielserver in isolierten Containern ausführen kann. Diese Anleitung behandelt die Installation von Docker CE auf unterstützten Betriebssystemen.</p>
+
+            <div class="section">
+                <h2>Systemanforderungen</h2>
+                <p>Bevor Sie Docker installieren, stellen Sie sicher, dass Ihr System die folgenden Anforderungen erfüllt:</p>
+                <ul>
+                    <li>64-Bit-Betriebssystem</li>
+                    <li>Linux-Kernel-Version 3.10 oder höher</li>
+                    <li>Root- oder sudo-Zugriff</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>Schnellinstallation</h2>
+                <p>Für die meisten Systeme können Sie das offizielle Docker-Installationsskript verwenden:</p>
+                
+                <pre><code>curl -sSL https://get.docker.com/ | CHANNEL=stable sudo sh</code></pre>
+                
+                <p>Dieses Skript erkennt automatisch Ihr Betriebssystem und installiert die entsprechende Docker CE-Version.</p>
+            </div>
+
+            <div class="section">
+                <h2>Manuelle Installation</h2>
+                
+                <div class="tab-container">
+                    <div class="tab-buttons">
+                        <button class="tab-button active" onclick="showTab('ubuntu-docker')">Ubuntu</button>
+                        <button class="tab-button" onclick="showTab('debian-docker')">Debian</button>
+                        <button class="tab-button" onclick="showTab('centos-docker')">CentOS/RHEL</button>
+                    </div>
+
+                    <div id="ubuntu-docker" class="tab-content active">
+                        <h3>Ubuntu Installation</h3>
+                        <pre><code># Paketindex aktualisieren
+sudo apt-get update
+
+# Erforderliche Pakete installieren
+sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
+
+# Docker's offiziellen GPG-Schlüssel hinzufügen
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+# Repository hinzufügen
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Docker CE installieren
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io</code></pre>
+                    </div>
+
+                    <div id="debian-docker" class="tab-content">
+                        <h3>Debian Installation</h3>
+                        <pre><code># Paketindex aktualisieren
+sudo apt-get update
+
+# Erforderliche Pakete installieren
+sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
+
+# Docker's offiziellen GPG-Schlüssel hinzufügen
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+# Repository hinzufügen
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Docker CE installieren
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io</code></pre>
+                    </div>
+
+                    <div id="centos-docker" class="tab-content">
+                        <h3>CentOS/RHEL Installation</h3>
+                        <pre><code># Erforderliche Pakete installieren
+sudo yum install -y yum-utils
+
+# Docker-Repository hinzufügen
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+# Docker CE installieren
+sudo yum install -y docker-ce docker-ce-cli containerd.io</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Nach der Installation</h2>
+                
+                <h3>Docker starten und aktivieren</h3>
+                <p>Nach der Installation starten und aktivieren Sie den Docker-Service:</p>
+                
+                <pre><code># Docker-Service starten
+sudo systemctl start docker
+
+# Docker beim Systemstart aktivieren
+sudo systemctl enable docker
+
+# Installation überprüfen
+sudo docker run hello-world</code></pre>
+
+                <h3>Optional: Benutzer zur Docker-Gruppe hinzufügen</h3>
+                <p>Um Docker-Befehle ohne sudo auszuführen, fügen Sie Ihren Benutzer zur Docker-Gruppe hinzu:</p>
+                
+                <pre><code># Aktuellen Benutzer zur Docker-Gruppe hinzufügen
+sudo usermod -aG docker $USER
+
+# Abmelden und wieder anmelden, damit die Änderungen wirksam werden
+# Oder führe diesen Befehl aus:
+newgrp docker</code></pre>
+
+                <div class="alert alert-warning">
+                    <strong>Warnung:</strong> Das Hinzufügen eines Benutzers zur Docker-Gruppe gewährt root-äquivalente Berechtigungen. Fügen Sie nur vertrauenswürdige Benutzer zu dieser Gruppe hinzu.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Überprüfung</h2>
+                <p>Überprüfen Sie, dass Docker korrekt funktioniert:</p>
+                
+                <pre><code># Docker-Version prüfen
+docker --version
+
+# Docker-Service-Status prüfen
+sudo systemctl status docker
+
+# Test-Container ausführen
+docker run hello-world</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>Fehlerbehebung</h2>
+                
+                <h3>Häufige Probleme</h3>
+                <ul>
+                    <li><strong>Berechtigung verweigert:</strong> Stellen Sie sicher, dass Sie Befehle mit sudo ausführen oder Ihren Benutzer zur Docker-Gruppe hinzugefügt haben</li>
+                    <li><strong>Service startet nicht:</strong> Überprüfen Sie die Logs mit <code>sudo journalctl -u docker.service</code></li>
+                    <li><strong>Netzwerkprobleme:</strong> Stellen Sie sicher, dass Ihre Firewall Docker's Standard-Bridge-Netzwerk zulässt</li>
+                </ul>
+
+                <h3>Docker Daemon Konfiguration</h3>
+                <p>Wenn Sie Docker Daemon-Einstellungen anpassen müssen, bearbeiten Sie <code>/etc/docker/daemon.json</code>:</p>
+                
+                <pre><code>{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  }
+}</code></pre>
+                
+                <p>Nach der Bearbeitung starten Sie Docker neu:</p>
+                <pre><code>sudo systemctl restart docker</code></pre>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="wings_updating.html" class="nav-button prev">Wings aktualisieren</a>
+                <a href="mounts_guide.html" class="nav-button next">Mounts verwenden</a>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
+

@@ -1,0 +1,184 @@
+﻿<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germando Docs - Panel Einrichtung</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Germando Logo" class="logo">
+                    <h2>Germando Docs</h2>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">Theme wechseln</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Willkommen</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Panel</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="getting_started.html">Erste Schritte</a></li>
+                            <li><a href="webserver.html">Webserver-Konfiguration</a></li>
+                            <li><a href="panel_setup.html" class="active">Panel-Einrichtung</a></li>
+                            <li><a href="optional_config.html">Optionale Konfiguration</a></li>
+                            <li><a href="updating_panel.html">Panel aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Erweitert</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="advanced_setup.html">Redis</a></li>
+                            <li><a href="advanced_setup.html">MySQL</a></li>
+                            <li><a href="artisan_commands.html">Artisan-Befehle</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Wings</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="wings_installation.html">Wings installieren</a></li>
+                            <li><a href="wings_configuration.html">ZusÃ¤tzliche Konfiguration</a></li>
+                            <li><a href="wings_updating.html">Wings aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Anleitungen</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="docker_guide.html">Docker installieren</a></li>
+                            <li><a href="mounts_guide.html">Mounts verwenden</a></li>
+                            <li><a href="ssl_guide.html">SSL-Zertifikate erstellen</a></li>
+                            <li><a href="php_upgrade.html">PHP aktualisieren</a></li>
+                            <li><a href="database_hosts.html">Datenbank-Hosts</a></li>
+                            <li><a href="uninstalling.html">Deinstallation</a></li>
+                            <li><a href="easypanel.html">Easypanel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="troubleshooting.html">Fehlerbehebung</a></li>
+                    <li><a href="comparison.html">Vergleich</a></li>
+                    <li><a href="glossary.html">Glossar</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1>Panel Einrichtung</h1>
+            <p>Die Kernumgebung kann einfach mit einem einzigen CLI-Befehl & dem in die App integrierten Web-Installer konfiguriert werden. Diese Schritte decken die Einrichtung von Dingen wie Sessions, Caching, Datenbankanmeldeinformationen und E-Mail-Versand ab.</p>
+            <p>Die Ausführung von <code>php artisan p:environment:setup</code> erstellt automatisch die erforderliche <code>.env</code>-Datei, falls sie nicht existiert, und generiert einen <code>APP_KEY</code>.</p>
+            <pre><code>php artisan p:environment:setup</code></pre>
+
+            <h3>APP_KEY SICHERN!</h3>
+            <p>Sichern Sie Ihren Verschlüsselungsschlüssel (<code>APP_KEY</code> in der <code>.env</code>-Datei). Dieser wird als Verschlüsselungsschlüssel für alle Daten verwendet, die sicher gespeichert werden müssen (z.B. API-Schlüssel). Speichern Sie ihn an einem sicheren Ort - nicht nur auf Ihrem Server. Wenn Sie ihn verlieren, sind alle verschlüsselten Daten nicht wiederherstellbar - auch wenn Sie Datenbank-Backups haben.</p>
+
+            <h2>Berechtigungen setzen</h2>
+            <p>Der nächste Schritt im Installationsprozess ist das Setzen der korrekten Berechtigungen für die Panel-Dateien, damit der Webserver sie korrekt verwenden kann.</p>
+            <pre><code>sudo chmod -R 755 storage/* bootstrap/cache/</code></pre>
+            
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button active" onclick="showTab('nginx-perms')">NGINX/Apache/Caddy</button>
+                    <button class="tab-button" onclick="showTab('rocky-nginx-perms')">Rocky Linux NGINX</button>
+                    <button class="tab-button" onclick="showTab('rocky-apache-perms')">Rocky Linux Apache</button>
+                </div>
+
+                <div id="nginx-perms" class="tab-content active">
+                    <pre><code>sudo chown -R www-data:www-data /var/www/pelican</code></pre>
+                </div>
+
+                <div id="rocky-nginx-perms" class="tab-content">
+                    <pre><code>sudo chown -R nginx:nginx /var/www/pelican</code></pre>
+                </div>
+
+                <div id="rocky-apache-perms" class="tab-content">
+                    <pre><code>sudo chown -R apache:apache /var/www/pelican</code></pre>
+                </div>
+            </div>
+
+            <h2>Datenbank-Setup</h2>
+            <p>Führen Sie als nächstes die Datenbankinstallation durch.</p>
+            
+            <h3>Datenbank erstellen</h3>
+            <p>Im nächsten Schritt müssen wir eine Datenbank zusammen mit einem Benutzer einrichten, der Zugriff darauf hat. Um dies zu tun, müssen Sie sich bei Ihrer MySQL-Kommandozeile anmelden.</p>
+            <pre><code>mysql -u root -p</code></pre>
+            
+            <p>Als nächstes erstellen wir einen Benutzer namens <code>pelican</code> und ermöglichen ihm Anmeldungen von <code>localhost</code>, was externe Verbindungen zu unserer Datenbank verhindert. Sie können auch <code>%</code> als Wildcard verwenden oder eine spezifische IP eingeben. Wir setzen das Kontopasswort auf <code>somePassword</code>.</p>
+            <pre><code>CREATE USER 'pelican'@'127.0.0.1' IDENTIFIED BY 'somePassword';</code></pre>
+            
+            <p>Als nächstes müssen wir eine Datenbank für das Panel erstellen. In diesem Tutorial nennen wir die Datenbank <code>panel</code>, aber Sie können diesen Namen durch beliebige andere Namen ersetzen.</p>
+            <pre><code>CREATE DATABASE panel;</code></pre>
+            
+            <p>Schließlich müssen wir MySQL mitteilen, dass unser <code>pelican</code>-Benutzer Zugriff auf die <code>panel</code>-Datenbank haben soll. Führen Sie dazu einfach den unten stehenden Befehl aus.</p>
+            <pre><code>GRANT ALL PRIVILEGES ON panel.* TO 'pelican'@'127.0.0.1';
+FLUSH PRIVILEGES;
+exit</pre></code>
+
+            <h3>Datenbank konfigurieren</h3>
+            <p>Jetzt müssen wir die Datenbank-Anmeldeinformationen für das Panel konfigurieren.</p>
+            <pre><code>php artisan p:environment:database</code></pre>
+
+            <h3>Datenbank initialisieren</h3>
+            <p>Jetzt müssen wir die Panel-Datenbank mit den Schemas einrichten, die zum Ausführen erforderlich sind.</p>
+            <pre><code>php artisan migrate --seed --force</code></pre>
+
+            <h2>Admin-Benutzer hinzufügen</h2>
+            <p>Sie müssen dann einen Administrationsbenutzer erstellen, damit Sie sich bei dem Panel anmelden können, das Sie gerade installiert haben. Führen Sie dazu den folgenden Befehl aus. Denken Sie daran, <code>--admin=1</code> zu verwenden, um dem Benutzer Administratorrechte zu geben.</p>
+            <pre><code>php artisan p:user:make</code></pre>
+
+            <h2>Cronjob einrichten</h2>
+            <p>Der letzte Schritt für das Panel besteht darin, einen Cronjob einzurichten, der jede Minute läuft, um verarbeitete Aufgaben zu verarbeiten und geplante Aufgaben zu versenden. Sie müssen den folgenden Cronjob öffnen und hinzufügen.</p>
+            <pre><code>sudo crontab -e</code></pre>
+            <pre><code>* * * * * cd /var/www/pelican && php artisan schedule:run >> /dev/null 2>&1</code></pre>
+
+            <h2>Queue Worker erstellen</h2>
+            <p>Als nächstes müssen Sie einen neuen systemd-Worker erstellen, um den Warteschlangenprozess kontinuierlich im Hintergrund auszuführen. Diese Warteschlange ist dafür verantwortlich, viele der Hintergrundaufgaben für Pelican zu versenden, wie z.B. das Versenden von E-Mails und das Durchführen von Hintergrundaktionen für Server.</p>
+            
+            <p>Erstellen Sie eine Datei namens <code>pelican-queue.service</code> in <code>/etc/systemd/system</code> mit dem folgenden Inhalt:</p>
+            
+            <div class="code-block">
+                <span class="code-label">/etc/systemd/system/pelican-queue.service</span>
+                <pre><code>[Unit]
+Description=Pelican Queue Worker
+After=redis-server.service
+
+[Service]
+User=www-data
+Group=www-data
+Restart=always
+ExecStart=/usr/bin/php /var/www/pelican/artisan queue:work --queue=high,standard,low --sleep=3 --tries=3
+StartLimitInterval=180
+StartLimitBurst=30
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>CentOS / RHEL / Rocky Linux:</strong> Wenn Sie CentOS, RHEL oder Rocky Linux verwenden, müssen Sie wahrscheinlich den <code>User</code> und <code>Group</code> in der obigen Datei zu <code>nginx</code> ändern, wenn Sie NGINX verwenden, oder zu <code>apache</code>, wenn Sie Apache verwenden.
+            </div>
+
+            <p>Schließlich aktivieren und starten Sie den Worker.</p>
+            <pre><code>sudo systemctl enable --now pelican-queue.service</code></pre>
+
+            <h2>Web-Installer</h2>
+            <p>Nachdem Sie die richtigen Berechtigungen gesetzt haben, setzen Sie die Panel-Installation über die Weboberfläche fort. Der Web-Installer befindet sich unter <code>&lt;domain&gt;/installer</code> oder <code>&lt;ip&gt;/installer</code>.</p>
+            
+            <div class="alert alert-info">
+                <strong>Möchten Sie etwas Erweiteres?</strong><br>
+                Stellen Sie sicher, dass Sie zuerst den MySQL-Guide lesen, wenn Sie MySQL/MariaDB anstelle von SQLite verwenden möchten! Wenn Sie Redis verwenden möchten, lesen Sie zuerst den Redis-Guide.
+            </div>
+
+            <div class="nav-buttons">
+                <a href="webserver.html" class="nav-button prev">Webserver Konfiguration</a>
+                <a href="optional_config.html" class="nav-button next">Optionale Konfiguration</a>
+            </div>
+        </main>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

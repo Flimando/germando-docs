@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germando Docs - Optionale Konfiguration</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Germando Logo" class="logo">
+                    <h2>Germando Docs</h2>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">Theme wechseln</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Willkommen</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Panel</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="getting_started.html">Erste Schritte</a></li>
+                            <li><a href="webserver.html">Webserver-Konfiguration</a></li>
+                            <li><a href="panel_setup.html">Panel-Einrichtung</a></li>
+                            <li><a href="optional_config.html" class="active">Optionale Konfiguration</a></li>
+                            <li><a href="updating_panel.html">Panel aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Erweitert</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="advanced_setup.html">Redis</a></li>
+                            <li><a href="advanced_setup.html">MySQL</a></li>
+                            <li><a href="artisan_commands.html">Artisan-Befehle</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Wings</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="wings_installation.html">Wings installieren</a></li>
+                            <li><a href="wings_configuration.html">ZusÃ¤tzliche Konfiguration</a></li>
+                            <li><a href="wings_updating.html">Wings aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Anleitungen</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="docker_guide.html">Docker installieren</a></li>
+                            <li><a href="mounts_guide.html">Mounts verwenden</a></li>
+                            <li><a href="ssl_guide.html">SSL-Zertifikate erstellen</a></li>
+                            <li><a href="php_upgrade.html">PHP aktualisieren</a></li>
+                            <li><a href="database_hosts.html">Datenbank-Hosts</a></li>
+                            <li><a href="uninstalling.html">Deinstallation</a></li>
+                            <li><a href="easypanel.html">Easypanel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="troubleshooting.html">Fehlerbehebung</a></li>
+                    <li><a href="comparison.html">Vergleich</a></li>
+                    <li><a href="glossary.html">Glossar</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1>Optionale Konfiguration</h1>
+            <h2>Backups</h2>
+            <p>Germando ermöglicht es Benutzern, Backups ihrer Server zu erstellen. Um Backups zu erstellen, muss eine Backup-Speichermethode konfiguriert werden.</p>
+            <p>Beim Ändern der Backup-Speichermethode von Germando können Benutzer weiterhin vorhandene Backups vom vorherigen Speichertreiber herunterladen oder löschen. Im Falle einer Migration von S3 zu lokalen Backups müssen die S3-Anmeldeinformationen nach dem Wechsel zur lokalen Backup-Speichermethode weiterhin konfiguriert bleiben.</p>
+            <p>Stellen Sie sicher, dass Sie den Konfigurations-Cache löschen (<code>cd /var/www/pelican && php artisan config:clear</code>) und den Queue-Worker neu starten (<code>systemctl restart pelican-queue</code>), nachdem Sie den Backup-Treiber geändert haben, um die Änderungen zu übernehmen.</p>
+
+            <h3>Lokale Backups verwenden</h3>
+            <p>Standardmäßig verwendet Germando lokalen Speicher über Wings für Backups. Diese Methode der Backup-Speicherung kann explizit auf der Einstellungsseite im Admin-Bereich des Panels festgelegt werden.</p>
+            <p>Bitte beachten Sie, dass bei Verwendung des lokalen Speichers über Wings das Ziel für Backups in der Wings-Konfigurationsdatei mit dem folgenden Einstellungsschlüssel festgelegt wird:</p>
+            <pre><code>system:
+  backup_directory: /path/to/backup/storage</code></pre>
+
+            <h3>S3-Backups verwenden</h3>
+            <p>AWS S3 (oder kompatibler Speicher) kann verwendet werden, um Remote- oder Cloud-basierte Backups zu speichern. Dies kann auf der Einstellungsseite im Admin-Bereich des Panels konfiguriert werden.</p>
+            <p>Für einige Konfigurationen müssen Sie möglicherweise Ihre S3-URL von <code>bucket.domain.com</code> zu <code>domain.com/bucket</code> ändern. Fügen Sie dazu <code>AWS_USE_PATH_STYLE_ENDPOINT=true</code> zu Ihrer <code>.env</code>-Datei hinzu.</p>
+
+            <h4>Multipart-Upload</h4>
+            <p>Das S3-Backup nutzt die S3-Multipart-Upload-Funktionen. In seltenen Fällen möchten Sie möglicherweise die Größe eines einzelnen Teils oder die Lebensdauer der generierten vorzeichenkettigen URLs anpassen. Die Standardteilgröße beträgt 5GB, und die Standardlebensdauer der vorzeichenkettigen URL beträgt 60 Minuten.</p>
+            <p>Sie können die maximale Teilgröße mit der Umgebungsvariable <code>BACKUP_MAX_PART_SIZE</code> konfigurieren. Sie müssen die Größe in Bytes angeben. Um die Lebensdauer der vorzeichenkettigen URL zu definieren, verwenden Sie die Variable <code>BACKUP_PRESIGNED_URL_LIFESPAN</code>. Die erwartete Einheit ist Minuten.</p>
+            <p>Der folgende <code>.env</code>-Ausschnitt konfiguriert 1GB-Teile und verwendet 120 Minuten als Lebensdauer der vorzeichenkettigen URL:</p>
+            <pre><code>BACKUP_MAX_PART_SIZE=1073741824
+BACKUP_PRESIGNED_URL_LIFESPAN=120</code></pre>
+
+            <h4>Speicherklasse</h4>
+            <p>Wenn Sie eine Speicherklasse angeben müssen, verwenden Sie die Umgebungsvariable <code>AWS_BACKUPS_STORAGE_CLASS</code>. Die Standardoption ist <code>STANDARD</code> (S3 Standard).</p>
+            <pre><code>AWS_BACKUPS_STORAGE_CLASS=</code></pre>
+
+            <h2>Reverse-Proxy-Einrichtung</h2>
+            <p>Wenn Sie Germando hinter einem Reverse-Proxy ausführen, wie z.B. Cloudflare's Flexible SSL oder NGINX/Apache/Caddy usw., müssen Sie eine schnelle Änderung am Panel vornehmen, um sicherzustellen, dass alles wie erwartet funktioniert. Standardmäßig wird Ihr Panel bei Verwendung dieser Reverse-Proxys Anfragen nicht korrekt verarbeiten. Sie werden höchstwahrscheinlich nicht in der Lage sein, sich anzumelden oder Sicherheitswarnungen in Ihrer Browser-Konsole zu sehen, wenn versucht wird, unsichere Assets zu laden. Dies liegt daran, dass die interne Logik, die das Panel verwendet, um zu bestimmen, wie Links generiert werden sollen, denkt, dass es über HTTP und nicht über HTTPS läuft.</p>
+            <p>Sie müssen die vertrauenswürdigen Proxys auf der Einstellungsseite bearbeiten. Wir empfehlen dringend, eine bestimmte IP-Adresse (oder eine durch Kommas getrennte Liste von IPs) anzugeben, anstatt <code>*</code> zu erlauben. Wenn Ihr Proxy beispielsweise auf demselben Computer wie der Server läuft, würde wahrscheinlich <code>127.0.0.1</code> für Sie funktionieren.</p>
+
+            <h3>NGINX-spezifische Konfiguration</h3>
+            <p>Um korrekt auf einen NGINX-Reverse-Proxy zu reagieren, muss die NGINX-Location-Konfiguration die folgenden Zeilen enthalten:</p>
+            <pre><code>proxy_set_header X-Real-IP $remote_addr;
+proxy_set_header Host $host;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto $scheme;
+proxy_redirect off;
+proxy_buffering off;
+proxy_request_buffering off;</code></pre>
+
+            <h3>Cloudflare-spezifische Konfiguration</h3>
+            <p>Wenn Sie Cloudflare's Flexible SSL verwenden, sollten Sie <code>TRUSTED_PROXIES</code> so einstellen, dass es deren IP-Adressen enthält.</p>
+            <p>Sie können dies einfach auf der Einstellungsseite im Panel tun.</p>
+
+            <h2>reCAPTCHA</h2>
+            <p>Das Panel verwendet unsichtbares reCAPTCHA, um die Login-Seite vor Brute-Force-Angriffen zu schützen. Wenn der Login-Versuch als verdächtig eingestuft wird, müssen Benutzer möglicherweise eine reCAPTCHA-Herausforderung durchführen.</p>
+
+            <h3>reCAPTCHA konfigurieren</h3>
+            <p>Obwohl wir standardmäßig einen globalen Site-Key und Secret-Key bereitstellen, empfehlen wir dringend, diesen für Ihr eigenes Setup zu ändern.</p>
+            <p>Sie können Ihre eigenen Schlüssel in der reCAPTCHA Admin-Konsole generieren.</p>
+            <p>Die Schlüssel können dann über die Einstellungen im Panel angewendet werden.</p>
+
+            <h3>Recaptcha deaktivieren</h3>
+            <p>Wenn Sie nicht auf Ihr Panel zugreifen können, können Sie es direkt in der <code>.env</code> deaktivieren.</p>
+            <p>Bearbeiten Sie die <code>.env</code> im Hauptverzeichnis des Panels <code>/var/www/pelican/</code> und ändern Sie den Wert von <code>RECAPTCHA_ENABLED</code> auf <code>false</code>.</p>
+
+            <h2>2FA</h2>
+            <p>Wenn möglich, sollten Sie das Panel verwenden, um Ihre 2FA-Einstellungen zu aktualisieren. Wenn Sie aus irgendeinem Grund nicht auf Ihr Panel zugreifen können, können Sie die folgenden Schritte verwenden.</p>
+
+            <h3>2FA-Anforderung deaktivieren</h3>
+            <p>Bearbeiten Sie die <code>.env</code> im Hauptverzeichnis des Panels <code>/var/www/pelican/</code> und ändern Sie den Wert von <code>APP_2FA_REQUIRED</code> auf <code>0</code>.</p>
+
+            <h3>2FA für einen bestimmten Benutzer deaktivieren</h3>
+            <p>Führen Sie den folgenden Befehl in Ihrem <code>/var/www/pelican</code>-Verzeichnis aus.</p>
+            <pre><code>php artisan p:user:disable2fa</code></pre>
+            <div class="nav-buttons">
+                <a href="panel_setup.html" class="nav-button prev">Panel Einrichtung</a>
+                <a href="updating_panel.html" class="nav-button next">Panel aktualisieren</a>
+            </div>
+        </main>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+

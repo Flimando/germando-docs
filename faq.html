@@ -1,0 +1,293 @@
+﻿<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germando Docs - FAQ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Germando Logo" class="logo">
+                    <h2>Germando Docs</h2>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">Theme wechseln</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Willkommen</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Panel</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="getting_started.html">Erste Schritte</a></li>
+                            <li><a href="webserver.html">Webserver-Konfiguration</a></li>
+                            <li><a href="panel_setup.html">Panel-Einrichtung</a></li>
+                            <li><a href="optional_config.html">Optionale Konfiguration</a></li>
+                            <li><a href="updating_panel.html">Panel aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Erweitert</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="advanced_setup.html">Redis</a></li>
+                            <li><a href="advanced_setup.html">MySQL</a></li>
+                            <li><a href="artisan_commands.html">Artisan-Befehle</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Wings</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="wings_installation.html">Wings installieren</a></li>
+                            <li><a href="wings_configuration.html">ZusÃ¤tzliche Konfiguration</a></li>
+                            <li><a href="wings_updating.html">Wings aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Anleitungen</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="docker_guide.html">Docker installieren</a></li>
+                            <li><a href="mounts_guide.html">Mounts verwenden</a></li>
+                            <li><a href="ssl_guide.html">SSL-Zertifikate erstellen</a></li>
+                            <li><a href="php_upgrade.html">PHP aktualisieren</a></li>
+                            <li><a href="database_hosts.html">Datenbank-Hosts</a></li>
+                            <li><a href="uninstalling.html">Deinstallation</a></li>
+                            <li><a href="easypanel.html">Easypanel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="troubleshooting.html">Fehlerbehebung</a></li>
+                    <li><a href="comparison.html">Vergleich</a></li>
+                    <li><a href="faq.html" class="active">FAQ</a></li>
+                    <li><a href="glossary.html">Glossar</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <div class="hero-section">
+                <h1>Häufig gestellte Fragen (FAQ)</h1>
+                <p class="hero-subtitle">Antworten auf die meist gestellten Fragen zu Germando und Pelican</p>
+            </div>
+
+            <div class="section">
+                <h2>🇩🇪 Über Germando</h2>
+                
+                <div class="faq-item">
+                    <h3>Was ist Germando?</h3>
+                    <p>Germando ist ein spezieller deutscher Fork von Pelican, der komplett ins Deutsche übersetzt wurde. Es behält alle technischen Vorteile von Pelican, aber spricht endlich Deutsch! Perfekt für alle, die ihre Server auf Deutsch verwalten möchten.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Ist Germando dasselbe wie Pelican?</h3>
+                    <p>Ja und nein. Germando basiert auf Pelican und verwendet denselben Code, aber ist vollständig ins Deutsche übersetzt. Funktional ist es identisch mit Pelican, nur die Sprache und teilweise die Benutzeroberfläche sind angepasst.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Kann ich von Pelican zu Germando wechseln?</h3>
+                    <p>Da Germando auf derselben Codebasis wie Pelican aufbaut, sollte ein Wechsel möglich sein. Jedoch empfehlen wir, erst eine Sicherung zu erstellen und in einer Testumgebung zu testen.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🛠️ Installation & Setup</h2>
+                
+                <div class="faq-item">
+                    <h3>Welche Systemanforderungen hat Germando?</h3>
+                    <p>Germando hat dieselben Anforderungen wie Pelican:</p>
+                    <ul>
+                        <li>PHP 8.1 oder höher</li>
+                        <li>MySQL 5.7+ oder MariaDB 10.2+</li>
+                        <li>Redis</li>
+                        <li>Composer</li>
+                        <li>Docker (für Wings)</li>
+                        <li>Mindestens 1GB RAM (2GB+ empfohlen)</li>
+                    </ul>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Kann ich Germando auf Shared Hosting installieren?</h3>
+                    <p>Nein, Germando erfordert wie Pelican vollständige Serverkontrolle. Shared Hosting unterstützt normalerweise nicht die erforderlichen Funktionen wie Composer, artisan-Befehle oder Docker.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Ist Germando kostenlos?</h3>
+                    <p>Ja! Germando ist wie Pelican 100% kostenlos und Open Source. Du kannst es für persönliche und kommerzielle Zwecke nutzen.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎮 Spiele & Server</h2>
+                
+                <div class="faq-item">
+                    <h3>Welche Spiele unterstützt Germando?</h3>
+                    <p>Germando unterstützt dieselben Spiele wie Pelican über die Egg-Konfigurationen:</p>
+                    <ul>
+                        <li>Minecraft (Java & Bedrock)</li>
+                        <li>Palworld</li>
+                        <li>Valheim</li>
+                        <li>Enshrouded</li>
+                        <li>Terraria</li>
+                        <li>Factorio</li>
+                        <li>ARK: Survival Evolved</li>
+                        <li>Rust</li>
+                        <li>Counter-Strike 2</li>
+                        <li>Und viele mehr!</li>
+                    </ul>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Wie viele Server kann ich mit Germando verwalten?</h3>
+                    <p>Es gibt keine Begrenzung in der Software selbst. Die Anzahl hängt von deinen Serverressourcen ab. Jeder Game-Server läuft in einem eigenen Docker-Container.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Kann ich eigene Game-Server-Konfigurationen erstellen?</h3>
+                    <p>Ja! Du kannst eigene Eggs erstellen oder bestehende anpassen. Die Egg-Konfigurationen sind JSON-basiert und relativ einfach zu verstehen.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔧 Technische Fragen</h2>
+                
+                <div class="faq-item">
+                    <h3>Was ist Wings?</h3>
+                    <p>Wings ist der Daemon (Hintergrunddienst), der die eigentlichen Game-Server verwaltet. Während das Panel die Weboberfläche bereitstellt, führt Wings die Server in Docker-Containern aus.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Muss ich Docker verstehen, um Germando zu nutzen?</h3>
+                    <p>Grundkenntnisse helfen, aber sind nicht zwingend erforderlich. Germando abstrahiert die meisten Docker-Operationen. Du solltest jedoch die Grundlagen verstehen, um Probleme zu lösen.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Kann ich mehrere Wings-Nodes haben?</h3>
+                    <p>Ja! Du kannst mehrere Wings-Instanzen auf verschiedenen Servern betreiben und sie alle über ein Panel verwalten. Dies ermöglicht horizontale Skalierung.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Wie sichere ich meine Germando-Installation?</h3>
+                    <p>Wichtige Sicherheitsmaßnahmen:</p>
+                    <ul>
+                        <li>SSL/TLS verwenden (HTTPS)</li>
+                        <li>Firewall richtig konfigurieren</li>
+                        <li>Zwei-Faktor-Authentifizierung aktivieren</li>
+                        <li>Regelmäßige Updates durchführen</li>
+                        <li>Starke Passwörter verwenden</li>
+                        <li>Datenbank-Backups erstellen</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🚨 Fehlerbehebung</h2>
+                
+                <div class="faq-item">
+                    <h3>Das Panel lädt nicht - was soll ich tun?</h3>
+                    <p>Prüfe folgende Punkte:</p>
+                    <ol>
+                        <li>Ist der Webserver (Apache/Nginx) gestartet?</li>
+                        <li>Sind die PHP-Abhängigkeiten installiert?</li>
+                        <li>Sind die Dateirechte korrekt gesetzt?</li>
+                        <li>Prüfe die Webserver-Logs auf Fehler</li>
+                        <li>Ist die .env-Datei korrekt konfiguriert?</li>
+                    </ol>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Server starten nicht - was ist das Problem?</h3>
+                    <p>Häufige Ursachen:</p>
+                    <ul>
+                        <li>Wings ist nicht gestartet oder nicht erreichbar</li>
+                        <li>Docker ist nicht installiert oder läuft nicht</li>
+                        <li>Ports sind bereits belegt</li>
+                        <li>Unzureichende Serverressourcen</li>
+                        <li>Falsche Egg-Konfiguration</li>
+                    </ul>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Wo finde ich die Log-Dateien?</h3>
+                    <p>Wichtige Log-Standorte:</p>
+                    <ul>
+                        <li><code>/var/www/pelican/storage/logs/</code> - Panel-Logs</li>
+                        <li><code>/var/log/pelican/</code> - Wings-Logs</li>
+                        <li><code>/var/log/nginx/</code> oder <code>/var/log/apache2/</code> - Webserver-Logs</li>
+                        <li><code>docker logs [container_name]</code> - Container-spezifische Logs</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🤝 Community & Support</h2>
+                
+                <div class="faq-item">
+                    <h3>Wo bekomme ich Hilfe?</h3>
+                    <p>Du kannst Hilfe an folgenden Stellen finden:</p>
+                    <ul>
+                        <li>Diese Dokumentation</li>
+                        <li>Pelican Discord Server (englisch)</li>
+                        <li>GitHub Issues für Bug-Reports</li>
+                        <li>Community-Foren</li>
+                    </ul>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Kann ich zur Entwicklung beitragen?</h3>
+                    <p>Ja! Germando ist Open Source. Du kannst:</p>
+                    <ul>
+                        <li>Übersetzungen verbessern</li>
+                        <li>Dokumentation erweitern</li>
+                        <li>Bugs melden</li>
+                        <li>Features vorschlagen</li>
+                        <li>Code beitragen</li>
+                    </ul>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Wie melde ich Sicherheitsprobleme?</h3>
+                    <p>Sicherheitsprobleme sollten verantwortungsvoll gemeldet werden. Kontaktiere das Pelican-Team direkt über <strong>team@pelican.dev</strong> und melde sie <strong>nicht</strong> öffentlich auf GitHub.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📈 Performance & Skalierung</h2>
+                
+                <div class="faq-item">
+                    <h3>Wie viele Spieler kann ein Server unterstützen?</h3>
+                    <p>Das hängt vom Spiel, der Serverkonfiguration und den verfügbaren Ressourcen ab. Germando selbst setzt keine Limits - die Beschränkungen kommen von den Spielen selbst und deiner Hardware.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Kann ich Germando in der Cloud betreiben?</h3>
+                    <p>Ja! Germando funktioniert auf allen großen Cloud-Anbietern wie AWS, Google Cloud, Azure, DigitalOcean, Hetzner, etc. Stelle nur sicher, dass Docker unterstützt wird.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Wie optimiere ich die Performance?</h3>
+                    <p>Performance-Tipps:</p>
+                    <ul>
+                        <li>Verwende SSD-Speicher</li>
+                        <li>Ausreichend RAM zuweisen</li>
+                        <li>Redis für Session-Storage nutzen</li>
+                        <li>Regelmäßige Wartung durchführen</li>
+                        <li>Monitoring einrichten</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>💡 Tipp:</strong><br>
+                Hast du eine Frage, die hier nicht beantwortet wird? Schau in unsere <a href="troubleshooting.html">Fehlerbehebung</a> oder das <a href="glossary.html">Glossar</a>!
+            </div>
+
+            <div class="nav-buttons">
+                <a href="troubleshooting.html" class="nav-button">Fehlerbehebung</a>
+                <a href="glossary.html" class="nav-button next">Glossar</a>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 

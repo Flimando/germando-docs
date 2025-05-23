@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germando Docs - Wings Aktualisierung</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Germando Logo" class="logo">
+                    <h2>Germando Docs</h2>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">Theme wechseln</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Willkommen</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Panel</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="getting_started.html">Erste Schritte</a></li>
+                            <li><a href="webserver.html">Webserver-Konfiguration</a></li>
+                            <li><a href="panel_setup.html">Panel-Einrichtung</a></li>
+                            <li><a href="optional_config.html">Optionale Konfiguration</a></li>
+                            <li><a href="updating_panel.html">Panel aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Erweitert</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="advanced_setup.html">Redis</a></li>
+                            <li><a href="advanced_setup.html">MySQL</a></li>
+                            <li><a href="artisan_commands.html">Artisan-Befehle</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Wings</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="wings_installation.html">Wings installieren</a></li>
+                            <li><a href="wings_configuration.html">Zusätzliche Konfiguration</a></li>
+                            <li><a href="wings_updating.html" class="active">Wings aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Anleitungen</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="docker_guide.html">Docker installieren</a></li>
+                            <li><a href="mounts_guide.html">Mounts verwenden</a></li>
+                            <li><a href="ssl_guide.html">SSL-Zertifikate erstellen</a></li>
+                            <li><a href="php_upgrade.html">PHP aktualisieren</a></li>
+                            <li><a href="database_hosts.html">Datenbank-Hosts</a></li>
+                            <li><a href="uninstalling.html">Deinstallation</a></li>
+                            <li><a href="easypanel.html">Easypanel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="troubleshooting.html">Fehlerbehebung</a></li>
+                    <li><a href="comparison.html">Vergleich</a></li>
+                    <li><a href="glossary.html">Glossar</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1>Wings Aktualisierung</h1>
+            
+            <p>Die Aktualisierung von Wings ist ein schmerzloser Prozess und sollte (Obacht sollte!) weniger als eine Minute dauern.</p>
+
+            <div class="section">
+                <h2>Wings Versionsanforderungen</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Panel Version</th>
+                            <th>Wings Version</th>
+                            <th>Unterstützt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1.0.0+</td>
+                            <td>1.0.0+</td>
+                            <td>✅</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="alert alert-warning">
+                    <strong>Warnung:</strong> Wenn Sie von < 1.0.0-beta9 aktualisieren, funktioniert dies nicht! Wenn Sie den Befehl nicht verwenden möchten und es manuell machen möchten, folgen Sie dem standardmäßigen Aktualisierungsprozess unten.
+                </div>
+
+                <pre><code>sudo wings update
+sudo systemctl restart wings</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>Update herunterladen</h2>
+                <p>Laden Sie zuerst die aktualisierte Wings Binary in <code>/usr/local/bin</code> herunter. Sie müssen Wings kurz stoppen.</p>
+                
+                <div class="alert alert-info">
+                    <strong>Tipp:</strong> Laufende Server werden <strong>nicht</strong> beeinträchtigt.
+                </div>
+
+                <pre><code>sudo systemctl stop wings
+sudo curl -L -o /usr/local/bin/wings "https://github.com/pelican-dev/wings/releases/latest/download/wings_linux_$([[ "$(uname -m)" == "x86_64" ]] && echo "amd64" || echo "arm64")"
+sudo chmod u+x /usr/local/bin/wings</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>Neustart</h2>
+                <p>Starten Sie zweitens den Prozess neu.</p>
+                
+                <pre><code>sudo systemctl restart wings</code></pre>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="wings_configuration.html" class="nav-button prev">Zusätzliche Konfiguration</a>
+                <a href="docker_guide.html" class="nav-button next">Docker installieren</a>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
+
+

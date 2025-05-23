@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germando Docs - Mounts verwenden</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Germando Logo" class="logo">
+                    <h2>Germando Docs</h2>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">Theme wechseln</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Willkommen</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Panel</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="getting_started.html">Erste Schritte</a></li>
+                            <li><a href="webserver.html">Webserver-Konfiguration</a></li>
+                            <li><a href="panel_setup.html">Panel-Einrichtung</a></li>
+                            <li><a href="optional_config.html">Optionale Konfiguration</a></li>
+                            <li><a href="updating_panel.html">Panel aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Erweitert</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="advanced_setup.html">Redis</a></li>
+                            <li><a href="advanced_setup.html">MySQL</a></li>
+                            <li><a href="artisan_commands.html">Artisan-Befehle</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Wings</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="wings_installation.html">Wings installieren</a></li>
+                            <li><a href="wings_configuration.html">ZusÃ¤tzliche Konfiguration</a></li>
+                            <li><a href="wings_updating.html">Wings aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Anleitungen</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="docker_guide.html">Docker installieren</a></li>
+                            <li><a href="mounts_guide.html" class="active">Mounts verwenden</a></li>
+                            <li><a href="ssl_guide.html">SSL-Zertifikate erstellen</a></li>
+                            <li><a href="php_upgrade.html">PHP aktualisieren</a></li>
+                            <li><a href="database_hosts.html">Datenbank-Hosts</a></li>
+                            <li><a href="uninstalling.html">Deinstallation</a></li>
+                            <li><a href="easypanel.html">Easypanel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="troubleshooting.html">Fehlerbehebung</a></li>
+                    <li><a href="comparison.html">Vergleich</a></li>
+                    <li><a href="glossary.html">Glossar</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1>Mounts verwenden</h1>
+            
+            <p>Mounts ist eine Funktion, die es Administratoren ermöglicht, andere Verzeichnisse vom Host-Dateisystem in einen Server-Container zu mounten.</p>
+
+            <div class="section">
+                <h2>Wings Konfiguration</h2>
+                <p>Aus Sicherheitsgründen ist es standardmäßig nicht möglich, Verzeichnisse auf einem Knoten zu mounten.</p>
+                
+                <p><strong>Verzeichnisse, die mountbar sein sollen, müssen explizit in der Wings-Konfiguration angegeben werden.</strong></p>
+                
+                <p>In der Wings-Konfigurationsdatei (<code>/etc/pelican/config.yml</code>) wird das Feld <code>allowed_mounts</code> verwendet, um mountbare Verzeichnisse aufzulisten. Die aufgelisteten Verzeichnisse und alle ihre Unterverzeichnisse können gemountet werden.</p>
+
+                <div class="code-block">
+                    <span class="code-label">/etc/pelican/config.yml</span>
+                    <pre><code>allowed_mounts:
+- /example</code></pre>
+                </div>
+
+                <p>Sie müssen Wings neu starten, um neue Änderungen an Ihrer Wings-Konfiguration anzuwenden.</p>
+            </div>
+
+            <div class="section">
+                <h2>Panel Konfiguration</h2>
+                <p>Sie müssen Mounts im Admin Panel konfigurieren, um sie mit Ihren Servern zu verwenden. Sie bestehen aus einem Quellpfad auf dem Knoten und einem Zielpfad, wo sie im Container gemountet werden.</p>
+                
+                <div class="alert alert-warning">
+                    <strong>Warnung:</strong> Standardmäßig können Mounts nicht auf <code>/home/container</code> oder eines seiner Unterverzeichnisse zielen. Sie können dies erlauben, indem Sie <code>BlockBaseDirMount</code> in der Wings-Konfiguration auf <code>false</code> setzen. Sie können nicht Server übergreifend mounten, wie z.B. Server A's Verzeichnis in Server B.
+                </div>
+
+                <h3>Mount erstellen</h3>
+                <ol>
+                    <li>Im Admin Panel gehen Sie zu <strong>Mounts</strong>.</li>
+                    <li>Erstellen Sie einen neuen Mount.</li>
+                    <li>Füllen Sie die Details wie erforderlich aus:
+                        <ul>
+                            <li><strong>Name</strong>: Name für Ihren Mount.</li>
+                            <li><strong>Beschreibung</strong>: Beschreibung für Ihren Mount.</li>
+                            <li><strong>Quelle</strong>: Der absolute Pfad zum Ordner oder zu den Dateien auf der Knoten-Maschine.</li>
+                            <li><strong>Ziel</strong>: Der absolute Pfad, wo der Mount innerhalb Ihres Servers platziert wird, kann <strong>nicht</strong> <code>/home/container</code> im Pfad enthalten.</li>
+                            <li><strong>Nur-Lesen</strong>: Ob der Mount nur lesbar für die Server ist, die ihn verwenden.</li>
+                            <li><strong>Benutzer mountbar</strong>: Ob Benutzern erlaubt wird, diesen Mount selbst zu mounten.</li>
+                        </ul>
+                    </li>
+                    <li>Nach dem Erstellen des Mounts müssen Sie sowohl <strong>Eggs</strong> als auch <strong>Knoten</strong> hinzufügen, auf denen dieser Mount verwendet werden darf.</li>
+                </ol>
+
+                <div class="alert alert-warning">
+                    <strong>Warnung:</strong> Alle Server, die dieselben Mounts verwenden, werden ihre Inhalte <strong>nur</strong> teilen, wenn sie sich auf demselben Knoten befinden. Mounts werden nicht zwischen Knoten synchronisiert.
+                </div>
+
+                <h3>Mount einem Server zuweisen</h3>
+                <ol>
+                    <li>Im Admin Panel navigieren Sie zu dem Server, mit dem Sie einen Mount verwenden möchten</li>
+                    <li>Gehen Sie zur Mounts-Seite</li>
+                    <li>Klicken Sie die <strong>+</strong> Schaltfläche</li>
+                    <li>Starten Sie den Server neu</li>
+                </ol>
+
+                <p>Die Dateien des Mounts sollten im Zielpfad im Container verfügbar werden. Sie können vorübergehend Ihren Server-Startbefehl zu <code>ls &lt;mount ziel&gt;</code> ändern, was den Inhalt des Mounts ausgeben sollte, wenn er korrekt konfiguriert ist.</p>
+
+                <div class="alert alert-info">
+                    <strong>Tipp:</strong> Mounts erscheinen nicht im Dateimanager des Panels und sind auch nicht über SFTP zugänglich. Der Server selbst wird jedoch in der Lage sein, die Mounts zu sehen und zu verwenden.
+                </div>
+
+                <h3>Beispiel Mount</h3>
+                <p>Der folgende Beispiel-Mount wird im Pfad <code>/var/lib/pelican/mounts</code> gespeichert, den wir zur Wings <code>config.yml</code> hinzufügen</p>
+
+                <div class="code-block">
+                    <span class="code-label">/etc/pelican/config.yml</span>
+                    <pre><code>allowed_mounts:
+  - /var/lib/pelican/mounts</code></pre>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="docker_guide.html" class="nav-button prev">Docker installieren</a>
+                <a href="ssl_guide.html" class="nav-button next">SSL-Zertifikate erstellen</a>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
+
+

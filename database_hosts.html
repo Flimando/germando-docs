@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germando Docs - Datenbank Hosts</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Germando Logo" class="logo">
+                    <h2>Germando Docs</h2>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">Theme wechseln</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Willkommen</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Panel</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="getting_started.html">Erste Schritte</a></li>
+                            <li><a href="webserver.html">Webserver-Konfiguration</a></li>
+                            <li><a href="panel_setup.html">Panel-Einrichtung</a></li>
+                            <li><a href="optional_config.html">Optionale Konfiguration</a></li>
+                            <li><a href="updating_panel.html">Panel aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Erweitert</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="advanced_setup.html">Redis</a></li>
+                            <li><a href="advanced_setup.html">MySQL</a></li>
+                            <li><a href="artisan_commands.html">Artisan-Befehle</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Wings</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="wings_installation.html">Wings installieren</a></li>
+                            <li><a href="wings_configuration.html">ZusÃ¤tzliche Konfiguration</a></li>
+                            <li><a href="wings_updating.html">Wings aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Anleitungen</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="docker_guide.html">Docker installieren</a></li>
+                            <li><a href="mounts_guide.html">Mounts verwenden</a></li>
+                            <li><a href="ssl_guide.html">SSL-Zertifikate erstellen</a></li>
+                            <li><a href="php_upgrade.html">PHP aktualisieren</a></li>
+                            <li><a href="database_hosts.html" class="active">Datenbank-Hosts</a></li>
+                            <li><a href="uninstalling.html">Deinstallation</a></li>
+                            <li><a href="easypanel.html">Easypanel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="troubleshooting.html">Fehlerbehebung</a></li>
+                    <li><a href="comparison.html">Vergleich</a></li>
+                    <li><a href="glossary.html">Glossar</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1>Datenbank Hosts</h1>
+            
+            <p>Datenbank Hosts ermöglichen es, serverbasierte Datenbanken auf dem jeweiligen Host zu erstellen.</p>
+
+            <h2>Datenbank Konfiguration</h2>
+            
+            <h3>Datenbank Host Benutzer erstellen</h3>
+            <p>Sie benötigen einen Datenbankbenutzer mit den korrekten Berechtigungen, bevor Sie fortfahren können.</p>
+            
+            <p>Führen Sie die folgenden Befehle aus, um schnell einen Benutzer für Ihren neuen Datenbank Host zu erstellen:</p>
+            
+            <pre><code>mysql -u root -p
+
+# Denken Sie daran, 'yourPassword' unten durch ein eindeutiges Passwort zu ersetzen
+# Ersetzen Sie 127.0.0.1 durch Ihre Panel-IP, wenn Panel und Wings auf verschiedenen Maschinen sind
+CREATE USER 'pelicanuser'@'127.0.0.1' IDENTIFIED BY 'yourPassword';
+GRANT ALL PRIVILEGES ON *.* TO 'pelicanuser'@'127.0.0.1' WITH GRANT OPTION;
+exit</code></pre>
+
+            <h3>Externen Datenbankzugriff erlauben</h3>
+            <p>Wahrscheinlich müssen Sie externen Zugriff auf diese MySQL-Instanz erlauben, damit Server sich mit ihr verbinden können.</p>
+            
+            <p>Dazu öffnen Sie <code>my.cnf</code>, dessen Speicherort je nach Betriebssystem und MySQL-Installation variiert. Sie können <code>find /etc -iname my.cnf</code> eingeben, um die Datei zu finden.</p>
+            
+            <p>Öffnen Sie <code>my.cnf</code>, fügen Sie den unten stehenden Text am Ende der Datei hinzu und speichern Sie sie:</p>
+            
+            <p><code>/etc/mysql/my.cnf</code></p>
+            <pre><code>[mysqld]
+bind-address=0.0.0.0</code></pre>
+            
+            <p>Starten Sie MySQL/MariaDB neu, um diese Änderungen anzuwenden. Dies überschreibt die Standard-MySQL-Konfiguration, die standardmäßig nur Anfragen von localhost akzeptiert. Diese Aktualisierung ermöglicht Verbindungen auf allen Schnittstellen und damit externe Verbindungen. Stellen Sie sicher, dass Sie den MySQL-Port (Standard 3306) in Ihrer Firewall freigeben.</p>
+            
+            <pre><code>sudo systemctl restart mysql
+# oder für MariaDB
+sudo systemctl restart mariadb</code></pre>
+
+            <h2>Panel Konfiguration</h2>
+            <p>Gehen Sie im Admin-Bereich des Panels zu "Datenbanken" und klicken Sie auf die Schaltfläche "Neuer Datenbank Host".</p>
+            
+            <div class="alert alert-info">
+                <strong>Tipp:</strong> Benutzer werden den Host später als ihren Datenbank-Endpunkt sehen. Daher sollten Sie ihn auf eine öffentliche IP oder FQDN setzen und nicht auf <code>localhost</code> zum Beispiel.
+            </div>
+            
+            <p>Klicken Sie auf "Erstellen" und wenn alles korrekt eingegeben wurde, sollten Sie zur Datenbank-Host-Liste weitergeleitet werden und Ihren neuen Datenbank Host sehen.</p>
+
+            <h3>Häufige Probleme</h3>
+            <ul>
+                <li><code>Connection refused</code>: Stellen Sie sicher, dass Ihr Datenbankserver läuft und dass Sie externen Zugriff auf Ihre Datenbank erlaubt haben.</li>
+                <li><code>Host '_______' is not allowed to connect to this MariaDB server</code>: Sie haben höchstwahrscheinlich den Datenbankbenutzer mit einem 127.0.0.1 Host erstellt und versuchen, sich von einem anderen Host zu verbinden.</li>
+                <li><code>Access denied for user '_______'@'_______'</code>: Sie haben entweder ein falsches Passwort eingegeben oder etwas stimmt mit dem Datenbankbenutzer nicht, den Sie eingegeben haben. Stellen Sie sicher, dass der Datenbankbenutzer existiert und die erforderlichen Berechtigungen hat.</li>
+            </ul>
+
+            <h2>Erweiterte Konfiguration</h2>
+            
+            <h3>Mehrere Datenbank Hosts</h3>
+            <p>Sie können mehrere Datenbank Hosts für Redundanz oder zur Lastverteilung auf verschiedene Server konfigurieren. Jeder Datenbank Host kann bestimmten Knoten zugewiesen werden.</p>
+            
+            <h3>Datenbank Host Sicherheit</h3>
+            <p>Für Produktionsumgebungen sollten Sie folgende Sicherheitsmaßnahmen in Betracht ziehen:</p>
+            <ul>
+                <li>Verwenden Sie starke, eindeutige Passwörter für Datenbankbenutzer</li>
+                <li>Beschränken Sie Datenbankbenutzer-Berechtigungen auf das Notwendige</li>
+                <li>Verwenden Sie SSL/TLS-Verbindungen zwischen Panel und Datenbank Hosts</li>
+                <li>Konfigurieren Sie Firewall-Regeln, um den Datenbankzugriff zu beschränken</li>
+                <li>Aktualisieren und patchen Sie Ihre Datenbanksoftware regelmäßig</li>
+            </ul>
+
+            <h3>Überwachung der Datenbankleistung</h3>
+            <p>Überwachen Sie Ihre Datenbank Hosts auf:</p>
+            <ul>
+                <li>Verbindungsanzahl und -limits</li>
+                <li>Abfrageleistung und langsame Abfragen</li>
+                <li>Festplatten-Speicherverbrauch</li>
+                <li>Speicherverbrauch</li>
+                <li>CPU-Auslastung</li>
+            </ul>
+            
+            <div class="nav-buttons">
+                <a href="php_upgrade.html" class="nav-button prev">PHP aktualisieren</a>
+                <a href="uninstalling.html" class="nav-button next">Deinstallation</a>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
+

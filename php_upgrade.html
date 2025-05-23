@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germando Docs - PHP Upgrade</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Germando Logo" class="logo">
+                    <h2>Germando Docs</h2>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">Theme wechseln</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Willkommen</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Panel</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="getting_started.html">Erste Schritte</a></li>
+                            <li><a href="webserver.html">Webserver-Konfiguration</a></li>
+                            <li><a href="panel_setup.html">Panel-Einrichtung</a></li>
+                            <li><a href="optional_config.html">Optionale Konfiguration</a></li>
+                            <li><a href="updating_panel.html">Panel aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Erweitert</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="advanced_setup.html">Redis</a></li>
+                            <li><a href="advanced_setup.html">MySQL</a></li>
+                            <li><a href="artisan_commands.html">Artisan-Befehle</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Wings</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="wings_installation.html">Wings installieren</a></li>
+                            <li><a href="wings_configuration.html">ZusÃ¤tzliche Konfiguration</a></li>
+                            <li><a href="wings_updating.html">Wings aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Anleitungen</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="docker_guide.html">Docker installieren</a></li>
+                            <li><a href="mounts_guide.html">Mounts verwenden</a></li>
+                            <li><a href="ssl_guide.html">SSL-Zertifikate erstellen</a></li>
+                            <li><a href="php_upgrade.html" class="active">PHP aktualisieren</a></li>
+                            <li><a href="database_hosts.html">Datenbank-Hosts</a></li>
+                            <li><a href="uninstalling.html">Deinstallation</a></li>
+                            <li><a href="easypanel.html">Easypanel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="troubleshooting.html">Fehlerbehebung</a></li>
+                    <li><a href="comparison.html">Vergleich</a></li>
+                    <li><a href="glossary.html">Glossar</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1>PHP Upgrade</h1>
+            
+            <p>Diese Dokumentation enthält Anweisungen für die Aktualisierung Ihres Systems auf die neueste Version von PHP. Bitte beziehen Sie sich auf die folgende Tabelle, um zu überprüfen, welche PHP-Version Sie für Ihre Version von Pelican benötigen.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Panel Version</th>
+                        <th>PHP Version</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1.0.0+</td>
+                        <td>8.2, 8.3, 8.4</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section">
+                <h2>PHP installieren</h2>
+                <p>Um PHP 8.4 zu installieren, müssen Sie die folgenden Befehle ausführen. Bitte beachten Sie, dass verschiedene Betriebssysteme möglicherweise leicht unterschiedliche Anforderungen dafür haben, wie diese Befehle formatiert sind.</p>
+
+                <pre><code># Zusätzliches Repository für PHP hinzufügen
+sudo add-apt-repository -y ppa:ondrej/php
+sudo apt -y update
+
+# Optional: Alte PHP-Versionen entfernen
+sudo apt -y purge php*
+
+# PHP 8.4 installieren
+sudo apt -y install php8.4 php8.4-{gd,mysql,mbstring,bcmath,xml,curl,zip,intl,sqlite3,fpm}</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>Webserver Konfiguration</h2>
+                
+                <div class="tab-container">
+                    <div class="tab-buttons">
+                        <button class="tab-button active" onclick="showTab('nginx-php')">NGINX</button>
+                        <button class="tab-button" onclick="showTab('apache-php')">Apache</button>
+                        <button class="tab-button" onclick="showTab('caddy-php')">Caddy</button>
+                    </div>
+
+                    <div id="nginx-php" class="tab-content active">
+                        <p>Nach dem Upgrade auf PHP 8.4 müssen Sie höchstwahrscheinlich Ihre NGINX-Konfiguration aktualisieren. Ihre Konfigurationsdatei heißt höchstwahrscheinlich <code>pelican.conf</code> und befindet sich im Verzeichnis <code>/etc/nginx/sites-available/</code>, oder bei CentOS in <code>/etc/nginx/conf.d/</code>.</p>
+                        
+                        <p>Stellen Sie sicher, dass Sie den Pfad im folgenden Befehl aktualisieren, um den tatsächlichen Speicherort Ihrer Konfigurationsdatei widerzuspiegeln.</p>
+                        
+                        <pre><code>sed -i -e 's/php[7|8].[0-9]-fpm.sock/php8.4-fpm.sock/' /etc/nginx/sites-available/pelican.conf</code></pre>
+                        
+                        <p>Nachdem Sie die Datei bearbeitet haben, führen Sie den folgenden Befehl aus, um NGINX neu zu laden und Ihre Änderungen anzuwenden.</p>
+                        
+                        <pre><code>systemctl reload nginx</code></pre>
+                    </div>
+
+                    <div id="apache-php" class="tab-content">
+                        <p>Führen Sie die folgenden Befehle aus, um alle vorherigen PHP-Versionen zu deaktivieren und PHP 8.4 beim Bearbeiten von Anfragen zu aktivieren.</p>
+                        
+                        <pre><code>a2dismod php*
+a2enmod php8.4</code></pre>
+                    </div>
+
+                    <div id="caddy-php" class="tab-content">
+                        <p>Nach dem Upgrade auf PHP 8.4 müssen Sie höchstwahrscheinlich Ihre Caddy-Konfiguration aktualisieren. Ihre Konfigurationsdatei heißt höchstwahrscheinlich <code>Caddyfile</code> und befindet sich im Verzeichnis <code>/etc/caddy/</code>.</p>
+                        
+                        <p>Stellen Sie sicher, dass Sie den Pfad im folgenden Befehl aktualisieren, um den tatsächlichen Speicherort Ihrer Konfigurationsdatei widerzuspiegeln.</p>
+                        
+                        <pre><code>sed -i -e 's/php[7|8].[0-9]-fpm.sock/php8.4-fpm.sock/' /etc/caddy/Caddyfile</code></pre>
+                        
+                        <p>Nachdem Sie die Datei bearbeitet haben, führen Sie den folgenden Befehl aus, um Caddy neu zu starten und Ihre Änderungen anzuwenden.</p>
+                        
+                        <pre><code>systemctl restart caddy</code></pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="ssl_guide.html" class="nav-button prev">SSL-Zertifikate erstellen</a>
+                <a href="database_hosts.html" class="nav-button next">Datenbank-Hosts</a>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
+
+

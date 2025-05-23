@@ -1,0 +1,189 @@
+﻿<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germando Docs - Fehlerbehebung</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Germando Logo" class="logo">
+                    <h2>Germando Docs</h2>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">Theme wechseln</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Willkommen</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Panel</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="getting_started.html">Erste Schritte</a></li>
+                            <li><a href="webserver.html">Webserver-Konfiguration</a></li>
+                            <li><a href="panel_setup.html">Panel-Einrichtung</a></li>
+                            <li><a href="optional_config.html">Optionale Konfiguration</a></li>
+                            <li><a href="updating_panel.html">Panel aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Erweitert</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="advanced_setup.html">Redis</a></li>
+                            <li><a href="advanced_setup.html">MySQL</a></li>
+                            <li><a href="artisan_commands.html">Artisan-Befehle</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Wings</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="wings_installation.html">Wings installieren</a></li>
+                            <li><a href="wings_configuration.html">ZusÃ¤tzliche Konfiguration</a></li>
+                            <li><a href="wings_updating.html">Wings aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Anleitungen</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="docker_guide.html">Docker installieren</a></li>
+                            <li><a href="mounts_guide.html">Mounts verwenden</a></li>
+                            <li><a href="ssl_guide.html">SSL-Zertifikate erstellen</a></li>
+                            <li><a href="php_upgrade.html">PHP aktualisieren</a></li>
+                            <li><a href="database_hosts.html">Datenbank-Hosts</a></li>
+                            <li><a href="uninstalling.html">Deinstallation</a></li>
+                            <li><a href="easypanel.html">Easypanel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="troubleshooting.html" class="active">Fehlerbehebung</a></li>
+                    <li><a href="comparison.html">Vergleich</a></li>
+                    <li><a href="glossary.html">Glossar</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1>Fehlerbehebung</h1>
+
+            <div class="section">
+                <h2>Panel-Fehler</h2>
+                <p>Wenn Sie einen <code>500 | SERVER ERROR</code> oder <code>Ein unerwarteter Fehler ist beim Bearbeiten dieser Anfrage aufgetreten</code> sehen, müssen Sie Ihre Panel-Logs überprüfen, indem Sie den folgenden Befehl ausführen.</p>
+
+                <pre><code>tail -n 1000 /var/www/pelican/storage/logs/laravel-$(date +%F).log | grep "\[$(date +%Y)"</code></pre>
+
+                <p>Wenn der obige Befehl nichts zurückgibt, haben Sie höchstwahrscheinlich falsche Berechtigungen für Ihren <code>storage</code> Ordner. Also müssen Sie das zuerst beheben. Sie können die korrekten Berechtigungen setzen, indem Sie <code>sudo chmod -R 755 /var/www/pelican/storage/* /var/www/pelican/bootstrap/cache/</code> ausführen. Stellen Sie auch sicher, dass Ihre Panel-Dateien dem korrekten Benutzer gehören.</p>
+
+                <div class="tab-container">
+                    <div class="tab-buttons">
+                        <button class="tab-button active" onclick="showTab('nginx-perms')">NGINX/Apache</button>
+                        <button class="tab-button" onclick="showTab('rocky-nginx-perms')">Rocky Linux NGINX</button>
+                        <button class="tab-button" onclick="showTab('rocky-apache-perms')">Rocky Linux Apache</button>
+                    </div>
+
+                    <div id="nginx-perms" class="tab-content active">
+                        <pre><code>sudo chown -R www-data:www-data /var/www/pelican</code></pre>
+                    </div>
+
+                    <div id="rocky-nginx-perms" class="tab-content">
+                        <pre><code>sudo chown -R nginx:nginx /var/www/pelican</code></pre>
+                    </div>
+
+                    <div id="rocky-apache-perms" class="tab-content">
+                        <pre><code>sudo chown -R apache:apache /var/www/pelican</code></pre>
+                    </div>
+                </div>
+
+                <h3>Häufige Fehler</h3>
+                <ul>
+                    <li><code>ErrorException: file_put_contents(_____): failed to open stream: Permission denied</code>: Falsche Dateiberechtigungen/Besitz für die Panel-Dateien, siehe oben.</li>
+                    <li><code>502 Bad Gateway Error</code>: Stellen Sie sicher, dass php-fpm läuft und dass Sie die korrekte PHP-Version in Ihrer Webserver-Konfiguration verwenden.</li>
+                    <li><code>CSRF token mismatch</code>: Aktivieren Sie SSL für Ihr Panel mit HTTPS-Protokoll-Schema in der APP_URL oder setzen Sie <code>SESSION_SECURE_COOKIE</code> auf <code>false</code> in Ihrer .env Datei.</li>
+                    <li><code>Connection refused [tcp://_______:6379]</code>: Redis läuft nicht oder ist aus anderen Gründen nicht erreichbar. (Beginnen Sie mit der Überprüfung des Status des Redis-Service: <code>systemctl status redis-server</code>)</li>
+                    <li><code>SSL: no alternative certificate subject name matches target host name '_______'</code>: Das verwendete SSL-Zertifikat für Ihr Panel ist nicht gültig für Ihre Panel-Domain, siehe diese Anleitung für die Erstellung eines neuen SSL-Zertifikats.</li>
+                    <li><code>General error: 8 attempt to write a readonly database</code>: Ihre <code>database.sqlite</code> hat falsche Dateiberechtigungen und ist schreibgeschützt. Stellen Sie sicher, dass die Datei beschreibbar ist und dem korrekten Benutzer gehört.</li>
+                    <li><code>Class '_____' not found</code>: Das bedeutet normalerweise, dass Ihnen PHP-Erweiterungen fehlen. Stellen Sie sicher, dass alle benötigten Erweiterungen installiert sind und Sie die korrekte PHP-Version verwenden.</li>
+                    <li><code>Connection timed out after 5001 miliseconds for _______:8080</code>: Ihr Panel kann Wings nicht erreichen, siehe die Wings-Verbindungsprobleme-Schritte unten.</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>Wings-Verbindungsprobleme</h2>
+                
+                <h3>Wings-Service überprüfen</h3>
+                <p>Zuerst sollten Sie sicherstellen, dass der Wings-Service läuft. Führen Sie dazu <code>systemctl status wings</code> aus. Es sollte anzeigen, dass der Service aktiv und läuft. Wenn er in einem fehlgeschlagenen Zustand ist, führen Sie <code>sudo wings diagnostics</code> aus, um die Wings-Logs auf Fehler zu überprüfen.</p>
+
+                <h4>Häufige Fehler</h4>
+                <ul>
+                    <li><code>open /etc/letsencrypt/live/_____________/fullchain.pem: no such file or directory</code>: Das SSL-Zertifikat für Wings fehlt, siehe diese Anleitung für die Erstellung eines SSL-Zertifikats.</li>
+                    <li><code>Pool overlaps with other one on this address space</code>: Sie haben bereits ein Docker-Netzwerk, das das Standard-Subnetz verwendet. (<code>172.18.0.0/16</code>) Ändern Sie das Subnetz in Ihrer Wings-Konfigurationsdatei und verwenden Sie <code>systemctl stop wings && docker network rm pelican_nw && systemctl start wings</code>, um die Änderung anzuwenden.</li>
+                    <li><code>Error response from Panel: AccessDeniedHttpException: You are not authorized to access this resource. (HTTP/403)</code>: Ihr Wings-Token ist falsch, Sie müssen den Token in Ihrer config.yml Datei aktualisieren</li>
+                    <li><code>Error response from Panel: _MissingResponseCode: No error response returned from API endpoint</code>: Ihr Panel antwortet nicht korrekt. Das passiert normalerweise, wenn Cloudflare die Verbindung blockiert. Stellen Sie in diesem Fall sicher, dass Ihre Wings-IP zur Cloudflare-Firewall hinzugefügt wird. Wenn Sie Cloudflare nicht verwenden, könnte es ein anderer CDN/DDoS-Schutz-Service oder Ihr Anbieter sein.</li>
+                    <li><code>remote: could not unmarshal response: invalid character '&lt;' looking for beginning of value</code>: Das ist im Grunde der gleiche Fehler wie oben: Cloudflare blockiert die Verbindung.</li>
+                </ul>
+
+                <h3>Wings-Port überprüfen</h3>
+                <p>Wenn Sie bestätigt haben, dass Wings ohne Fehler läuft, sollten Sie sicherstellen, dass der Wings-Port (standardmäßig <code>8080</code>) nicht von einer Firewall blockiert wird. Der beste Weg, dies zu überprüfen, ist die Verwendung von Online-Port-Checkern wie dnschecker.org</p>
+                
+                <p>Es sollte "open" anzeigen, wenn Sie nach Ihrem Node-FQDN (z.B. <code>node.example.com</code> oder <code>123.123.123.123</code>) und Ihrem Wings-Port (z.B. <code>8080</code>) suchen. Wenn es "timed-out" anzeigt, haben Sie eine Firewall, die den Port blockiert. Das könnte eine interne Firewall (wie iptables) oder eine externe Firewall (z.B. von Ihrem Anbieter) sein.</p>
+
+                <h3>NAT-Loopback überprüfen</h3>
+                <p>Wenn sich Ihr Panel und Wings auf derselben Maschine oder demselben Netzwerk befinden und Sie Domains verwenden, sollten Sie NAT-Loopback-Probleme überprüfen. Bearbeiten Sie die <code>/etc/hosts</code> Datei auf Ihrer Panel/Wings-Maschine und fügen Sie einen Eintrag für Ihre IP und Domain hinzu.</p>
+
+                <div class="code-block">
+                    <span class="code-label">/etc/hosts</span>
+                    <pre><code>123.123.123.123 panel.example.com node.example.com</code></pre>
+                </div>
+
+                <h3>Wings-Verbindung überprüfen</h3>
+                <p>Wenn Sie die obigen Punkte bestätigt haben, müssen Sie eine erweiterte Fehlerbehebung durchführen.</p>
+
+                <h4>Panel &lt;-&gt; Wings Verbindung</h4>
+                <p>Führen Sie <code>curl &lt;protokoll&gt;&lt;node fqdn&gt;:&lt;node port&gt;</code> (z.B. <code>curl https://node.example.com:8080</code> oder <code>curl http://123.123.123.123:8080</code>) auf Ihrer Panel-Maschine aus und schauen Sie, was es ausgibt.</p>
+
+                <h4>Browser &lt;-&gt; Wings Verbindung</h4>
+                <p>Öffnen Sie <code>&lt;protokoll&gt;&lt;node fqdn&gt;:&lt;node port&gt;</code> (z.B. <code>https://node.example.com:8080</code> oder <code>http://123.123.123.123:8080</code>) in Ihrem Browser und schauen Sie, was es ausgibt.</p>
+
+                <p>In beiden Fällen sollte es das ausgeben, wenn Wings erreichbar ist:</p>
+                <pre><code>{"error" : "The required authorization heads were not present in the request."}</code></pre>
+
+                <div class="alert alert-info">
+                    <strong>Info:</strong> Nicht sicher, was ein bestimmter Fehler bedeutet? Besuchen Sie unseren Discord und wir helfen Ihnen gerne!
+                </div>
+
+                <h3>Node-Einstellungen überprüfen</h3>
+                <p>Wenn die obigen Verbindungsüberprüfungen beide erfolgreich waren, haben Sie möglicherweise die Node-Einstellungen im Panel falsch konfiguriert. Stellen Sie sicher, dass Ihr Node-FQDN/IP, Port und Schema (HTTP/HTTPS) korrekt ist.</p>
+                
+                <p>Bei der Verwendung eines Reverse-Proxys könnten Sie unterschiedliche externe und interne Ports für Wings haben. (z.B. <code>80</code> intern und <code>443</code> extern) Stellen Sie in diesem Fall sicher, dass die Node-Einstellungen im Panel den externen Port verwenden, während die Wings-Konfigurationsdatei den internen Port verwendet!</p>
+            </div>
+
+            <div class="section">
+                <h2>Zeitpläne laufen nicht</h2>
+                <p>Wenn Ihre Zeitpläne bei <code>Processing</code> hängen bleiben oder die Aufgaben nicht ausführen, überprüfen Sie Folgendes:</p>
+                
+                <ul>
+                    <li>Ist Ihr Zeitplan so eingestellt, dass er <code>NUR LÄUFT, WENN SERVER ONLINE IST</code> und der Server ist gerade offline?</li>
+                    <li>Läuft Ihr Queue-Worker-Service? (<code>systemctl status pelican-queue</code>)</li>
+                    <li>Verwendet Ihr Queue-Worker-Service die korrekte PHP-Version? (<code>php -v</code>)</li>
+                    <li>Ist Ihr Cronjob korrekt eingerichtet? (<code>crontab -l -u www-data</code> sollte einen Eintrag anzeigen, der <code>php artisan schedule:run</code> jede Minute ausführt)</li>
+                </ul>
+
+                <p>Wenn Ihr Queue-Worker-Service nicht läuft, können Sie auch die Panel-Logs auf Fehler überprüfen.</p>
+                
+                <pre><code>tail -n 100 /var/www/pelican/storage/logs/laravel-$(date +%F).log | grep "\[$(date +%Y)"</code></pre>
+
+                <p>Um den Queue-Worker-Service neu zu erstellen, können Sie <code>php /var/www/pelican/artisan p:environment:queue-service --overwrite</code> ausführen.</p>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="easypanel.html" class="nav-button prev">Easypanel</a>
+                <a href="comparison.html" class="nav-button next">Vergleich</a>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
+
+

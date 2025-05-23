@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germando Docs - Erste Schritte</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Germando Logo" class="logo">
+                    <h2>Germando Docs</h2>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">Theme wechseln</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Willkommen</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Panel</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="getting_started.html" class="active">Erste Schritte</a></li>
+                            <li><a href="webserver.html">Webserver-Konfiguration</a></li>
+                            <li><a href="panel_setup.html">Panel-Einrichtung</a></li>
+                            <li><a href="optional_config.html">Optionale Konfiguration</a></li>
+                            <li><a href="updating_panel.html">Panel aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Erweitert</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="advanced_setup.html">Redis</a></li>
+                            <li><a href="advanced_setup.html">MySQL</a></li>
+                            <li><a href="artisan_commands.html">Artisan-Befehle</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Wings</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="wings_installation.html">Wings installieren</a></li>
+                            <li><a href="wings_configuration.html">ZusÃ¤tzliche Konfiguration</a></li>
+                            <li><a href="wings_updating.html">Wings aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Anleitungen</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="docker_guide.html">Docker installieren</a></li>
+                            <li><a href="mounts_guide.html">Mounts verwenden</a></li>
+                            <li><a href="ssl_guide.html">SSL-Zertifikate erstellen</a></li>
+                            <li><a href="php_upgrade.html">PHP aktualisieren</a></li>
+                            <li><a href="database_hosts.html">Datenbank-Hosts</a></li>
+                            <li><a href="uninstalling.html">Deinstallation</a></li>
+                            <li><a href="easypanel.html">Easypanel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="troubleshooting.html">Fehlerbehebung</a></li>
+                    <li><a href="comparison.html">Vergleich</a></li>
+                    <li><a href="glossary.html">Glossar</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1>Erste Schritte</h1>
+            
+            <p>Pelican Panel ist dafür ausgelegt, auf Ihrem Webserver zu laufen.</p>
+            
+            <p>Sie sollten unsere Dokumentation durchlesen. Wir haben viel Zeit damit verbracht, diese Dokumentation für die Community zu erstellen. Bitte nehmen Sie sich etwas Zeit, sie zu lesen, bevor Sie in den Foren um Hilfe bitten!</p>
+
+            <div class="alert alert-danger">
+                <strong>Sie sollten grundlegende Kenntnisse von Linux haben, bevor Sie fortfahren!</strong>
+            </div>
+
+            <div class="alert alert-warning">
+                <strong>Pelican befindet sich derzeit in der Beta-Phase!</strong> Einige Dinge können sich zwischen Beta-Versionen ändern oder brechen!
+            </div>
+
+            <div class="section">
+                <h2>Wahl eines Betriebssystems (OS)</h2>
+                <p>Pelican läuft auf einer Vielzahl von Betriebssystemen, wählen Sie also das aus, mit dem Sie am vertrautesten sind. Hinweis: Andere Betriebssysteme, die unten nicht aufgeführt sind, könnten immer noch funktionieren.</p>
+
+                <div class="alert alert-warning">
+                    <strong>OpenVZ</strong>, <strong>außer bei spezieller Konfiguration</strong>, funktioniert <strong>nicht</strong> mit Pelican.
+                </div>
+
+                <table class="os-table">
+                    <thead>
+                        <tr>
+                            <th>Betriebssystem</th>
+                            <th>Version</th>
+                            <th>Unterstützt</th>
+                            <th>Hinweise</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="3"><strong>Ubuntu</strong></td>
+                            <td>20.04</td>
+                            <td>⚠️</td>
+                            <td><strong>Keine SQLite-Unterstützung</strong>, Ubuntu 20.04 EoL ist April 2025, nicht empfohlen</td>
+                        </tr>
+                        <tr>
+                            <td>22.04</td>
+                            <td>✅</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><strong>24.04</strong></td>
+                            <td>✅</td>
+                            <td>Dokumentation basiert auf Ubuntu 24.04 als Basis-OS.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rocky Linux</strong></td>
+                            <td>9</td>
+                            <td>✅</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2"><strong>Debian</strong></td>
+                            <td>11</td>
+                            <td>⚠️</td>
+                            <td><strong>Keine SQLite-Unterstützung</strong></td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>✅</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>SQLite-Unterstützung hängt davon ab, dass <code>libsqlite3-0_3.35+</code> auf dem Host-System vorhanden ist. Ubuntu 20.04 & Debian 11 erfüllen diese Anforderung nicht.</p>
+            </div>
+
+            <div class="section">
+                <h2>Abhängigkeiten</h2>
+                <p>Für das Panel müssen Sie <strong>PHP <code>8.4</code> (empfohlen), <code>8.3</code> oder <code>8.2</code></strong> mit den folgenden <strong>Erweiterungen</strong> installieren:<br>
+                <code>gd</code>, <code>mysql</code>, <code>mbstring</code>, <code>bcmath</code>, <code>xml</code>, <code>curl</code>, <code>zip</code>, <code>intl</code>, <code>sqlite3</code> und <code>fpm</code>.</p>
+
+                <p>Sie benötigen auch einen Webserver. Derzeit werden <strong>Apache, NGINX oder Caddy</strong> unterstützt.</p>
+
+                <p>Wenn Sie MySQL oder MariaDB für die Panel-Datenbank verwenden möchten, stellen Sie sicher, dass Sie entweder <strong>MySQL 8+ oder MariaDB 10.6+</strong> installieren. (sowohl Client als auch Server!)</p>
+
+                <p>Schließlich benötigen Sie für einige Befehle während der Installation <code>curl</code>, <code>tar</code> und <code>unzip</code>.</p>
+
+                <div class="alert alert-warning">
+                    <strong>Bitte stellen Sie sicher, dass Sie <strong>alle</strong> benötigten Abhängigkeiten installiert haben, bevor Sie fortfahren!</strong>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Verzeichnisse erstellen & Dateien herunterladen</h2>
+                <p>Der erste Schritt in diesem Prozess ist die Erstellung des Ordners, in dem das Panel leben wird, und dann in diesen neu erstellten Ordner zu wechseln.</p>
+
+                <pre><code>sudo mkdir -p /var/www/pelican
+cd /var/www/pelican</code></pre>
+
+                <p>Sobald Sie ein neues Verzeichnis erstellt und in dieses gewechselt haben, müssen Sie die Panel-Dateien herunterladen. Dies ist so einfach wie die Verwendung von <code>curl</code> zum Herunterladen der neuesten Version.</p>
+
+                <pre><code>curl -L https://github.com/flimanda/germando-panel/releases/latest/download/panel.tar.gz | sudo tar -xzv</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>Composer installieren</h2>
+                <p>Als nächstes richten wir Composer zusammen mit den erforderlichen Abhängigkeiten ein.</p>
+
+                <pre><code>curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer</code></pre>
+
+                <pre><code>sudo COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader</code></pre>
+
+                <div class="alert alert-info">
+                    <strong>Auch wenn Composer Ihnen mitteilt, dass Sie veraltete Abhängigkeiten haben, führen Sie <strong>nicht</strong> <code>composer update</code> aus!</strong>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Nächste Schritte</h2>
+                <p>Nachdem Sie diese Grundlagen eingerichtet haben, können Sie mit der Webserver-Konfiguration fortfahren:</p>
+                <div class="nav-buttons">
+                    <a href="index.html" class="nav-button prev">Willkommen</a>
+                    <a href="webserver.html" class="nav-button next">Webserver-Konfiguration</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
+

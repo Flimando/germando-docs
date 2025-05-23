@@ -1,0 +1,243 @@
+﻿<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germando Docs - SSL Zertifikate</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Germando Logo" class="logo">
+                    <h2>Germando Docs</h2>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">Theme wechseln</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Willkommen</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Panel</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="getting_started.html">Erste Schritte</a></li>
+                            <li><a href="webserver.html">Webserver-Konfiguration</a></li>
+                            <li><a href="panel_setup.html">Panel-Einrichtung</a></li>
+                            <li><a href="optional_config.html">Optionale Konfiguration</a></li>
+                            <li><a href="updating_panel.html">Panel aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Erweitert</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="advanced_setup.html">Redis</a></li>
+                            <li><a href="advanced_setup.html">MySQL</a></li>
+                            <li><a href="artisan_commands.html">Artisan-Befehle</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Wings</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="wings_installation.html">Wings installieren</a></li>
+                            <li><a href="wings_configuration.html">ZusÃ¤tzliche Konfiguration</a></li>
+                            <li><a href="wings_updating.html">Wings aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Anleitungen</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="docker_guide.html">Docker installieren</a></li>
+                            <li><a href="mounts_guide.html">Mounts verwenden</a></li>
+                            <li><a href="ssl_guide.html" class="active">SSL-Zertifikate erstellen</a></li>
+                            <li><a href="php_upgrade.html">PHP aktualisieren</a></li>
+                            <li><a href="database_hosts.html">Datenbank-Hosts</a></li>
+                            <li><a href="uninstalling.html">Deinstallation</a></li>
+                            <li><a href="easypanel.html">Easypanel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="troubleshooting.html">Fehlerbehebung</a></li>
+                    <li><a href="comparison.html">Vergleich</a></li>
+                    <li><a href="glossary.html">Glossar</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1>SSL-Zertifikate erstellen</h1>
+            
+            <p>Diese Tutorials behandeln kurz das Erstellen neuer SSL-Zertifikate für Ihr Panel und/oder Wings.</p>
+
+            <div class="section">
+                <h2>Certbot (Empfohlen)</h2>
+                
+                <div class="alert alert-info">
+                    <strong>Info:</strong> Diese Methode ist am meisten empfohlen und sollte in 98% der Setups funktionieren.
+                </div>
+
+                <p>Wir beginnen mit der Installation von Certbot, einem einfachen Skript, das unsere Zertifikate automatisch erneuert und deren Erstellung viel einfacher macht. Der folgende Befehl ist für Ubuntu-Distributionen, aber Sie können immer Certbots offizielle Website für Installationsanweisungen prüfen.</p>
+
+                <div class="tab-container">
+                    <div class="tab-buttons">
+                        <button class="tab-button active" onclick="showTab('nginx-install')">NGINX</button>
+                        <button class="tab-button" onclick="showTab('apache-install')">Apache</button>
+                        <button class="tab-button" onclick="showTab('caddy-install')">Caddy / Andere</button>
+                    </div>
+
+                    <div id="nginx-install" class="tab-content active">
+                        <pre><code>sudo apt install -y python3-certbot-nginx</code></pre>
+                    </div>
+
+                    <div id="apache-install" class="tab-content">
+                        <pre><code>sudo apt install -y python3-certbot-apache</code></pre>
+                    </div>
+
+                    <div id="caddy-install" class="tab-content">
+                        <pre><code>sudo apt install -y certbot</code></pre>
+                    </div>
+                </div>
+
+                <h3>Zertifikat erstellen</h3>
+                <p>Nach der Installation von Certbot müssen wir ein Zertifikat generieren. Es gibt mehrere Möglichkeiten, dies zu tun, aber am einfachsten ist es, das webserver-spezifische Certbot-Plugin zu verwenden, das Sie gerade installiert haben.</p>
+
+                <div class="alert alert-info">
+                    <strong>Info:</strong> Für reine Wings-Maschinen, die keinen Webserver benötigen, verwenden Sie die Standalone- oder DNS-Methode von Certbot, da Sie keinen Webserver dafür benötigen.
+                </div>
+
+                <p>Im folgenden Befehl sollten Sie <code>example.com</code> durch die Domain ersetzen, für die Sie ein Zertifikat generieren möchten. Wenn Sie mehrere Domains haben, für die Sie Zertifikate möchten, fügen Sie einfach weitere <code>-d anotherdomain.com</code> Flags zum Befehl hinzu.</p>
+
+                <h4>HTTP Challenge</h4>
+                <p>HTTP Challenge erfordert, dass Sie Port 80 für die Challenge-Verifizierung freigeben.</p>
+
+                <div class="tab-container">
+                    <div class="tab-buttons">
+                        <button class="tab-button active" onclick="showTab('nginx-http')">NGINX</button>
+                        <button class="tab-button" onclick="showTab('apache-http')">Apache</button>
+                        <button class="tab-button" onclick="showTab('standalone-http')">Standalone</button>
+                    </div>
+
+                    <div id="nginx-http" class="tab-content active">
+                        <pre><code>certbot certonly --nginx -d example.com</code></pre>
+                    </div>
+
+                    <div id="apache-http" class="tab-content">
+                        <pre><code>certbot certonly --apache -d example.com</code></pre>
+                    </div>
+
+                    <div id="standalone-http" class="tab-content">
+                        <pre><code>certbot certonly --standalone -d example.com</code></pre>
+                    </div>
+                </div>
+
+                <h4>DNS Challenge</h4>
+                <p>DNS Challenge erfordert, dass Sie einen neuen TXT DNS-Eintrag erstellen, um die Domain-Eigentümerschaft zu verifizieren, anstatt Port 80 freigeben zu müssen. Die Anweisungen werden angezeigt, wenn Sie den folgenden Certbot-Befehl ausführen.</p>
+
+                <pre><code>certbot -d example.com --manual --preferred-challenges dns certonly</code></pre>
+
+                <h3>Automatische Erneuerung</h3>
+                <p>Sie möchten wahrscheinlich auch die automatische Erneuerung von Zertifikaten konfigurieren, um unerwartete Zertifikatsabläufe zu verhindern. Sie können Crontab mit <code>sudo crontab -e</code> öffnen und die folgende Zeile am Ende hinzufügen für den Versuch der Erneuerung jeden Tag um 23 Uhr (11 PM).</p>
+
+                <p>Deploy Hook würde den Nginx-Service neu starten, um ein neues Zertifikat anzuwenden, wenn es erfolgreich erneuert wurde. Ändern Sie <code>nginx</code> im Restart-Befehl entsprechend Ihren Bedürfnissen, z.B. zu <code>apache</code> oder <code>wings</code>.</p>
+
+                <pre><code>0 23 * * * certbot renew --quiet --deploy-hook "systemctl restart nginx"</code></pre>
+
+                <h3>Fehlerbehebung</h3>
+                <p>Wenn Sie eine <code>Unsichere Verbindung</code> oder SSL/TLS-bezogene Fehler beim Zugriff auf Ihr Panel oder Wings erhalten, ist das Zertifikat wahrscheinlich abgelaufen. Dies kann einfach durch Erneuerung des SSL-Zertifikats behoben werden, obwohl der Befehl <code>certbot renew</code> möglicherweise nicht funktioniert, wenn Port 80 in Verwendung ist.</p>
+
+                <p>Die Lösung dafür ist die Verwendung der Nginx- oder Apache-Plugins mit <code>--nginx</code> und <code>--apache</code>. Alternativ können Sie Nginx stoppen, dann das Zertifikat erneuern und schließlich Nginx neu starten.</p>
+
+                <p>Nginx stoppen:</p>
+                <pre><code>systemctl stop nginx</code></pre>
+
+                <p>Zertifikat erneuern:</p>
+                <pre><code>certbot renew</code></pre>
+
+                <p>Sobald der Prozess abgeschlossen ist, können Sie Nginx neu starten:</p>
+                <pre><code>systemctl start nginx</code></pre>
+
+                <p>Sie müssen möglicherweise auch Wings neu starten, da nicht jeder Service in der Lage ist, ein aktualisiertes Zertifikat automatisch anzuwenden:</p>
+                <pre><code>systemctl restart wings</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>Apache mit CloudFlare API (Erweitert)</h2>
+                
+                <div class="alert alert-warning">
+                    <strong>Warnung:</strong> Dies ist für fortgeschrittene Benutzer, deren Serversysteme keinen Zugang zu Port 80 haben. Der folgende Befehl ist für Ubuntu-Distributionen und CloudFlare API.
+                </div>
+
+                <pre><code>curl https://get.acme.sh | sh</code></pre>
+
+                <h3>CloudFlare API-Schlüssel erhalten (Legacy)</h3>
+                <p>Nach der Installation von acme.sh müssen wir einen CloudFlare API-Schlüssel abrufen. Wählen Sie auf der Cloudflare-Website Ihre Domain aus, kopieren Sie dann auf der rechten Seite Ihre "Zone ID" und "Account ID". Klicken Sie auf "Get your API token", klicken Sie auf "Create Token" > wählen Sie die Vorlage "Edit zone DNS" > wählen Sie den Bereich "Zone Resources".</p>
+
+                <h3>Zertifikat erstellen</h3>
+                <p>Da die Konfigurationsdatei auf Certbot basiert, müssen wir den Ordner manuell erstellen.</p>
+
+                <pre><code>sudo mkdir -p /etc/letsencrypt/live/example.com</code></pre>
+
+                <p>Nach der Installation von acme.sh und dem Erhalt des CloudFlare API-Schlüssels müssen wir dann ein Zertifikat generieren. Geben Sie zuerst die CloudFlare API-Anmeldedaten ein.</p>
+
+                <pre><code>export CF_Token="Your_CloudFlare_API_Key"
+export CF_Account_ID="Your_CloudFlare_Account_ID"
+export CF_Zone_ID="Your_CloudFlare_Zone_ID"</code></pre>
+            </div>
+
+            <div class="section">
+                <h2>Caddy mit CloudFlare API (Erweitert)</h2>
+                
+                <div class="alert alert-warning">
+                    <strong>Warnung:</strong> Dies ist für fortgeschrittene Benutzer, die Cloudflare im Proxy-Modus betreiben oder keinen Zugang zu Port 80 haben.
+                </div>
+
+                <h3>Caddy mit Cloudflare DNS-Plugin installieren</h3>
+                <p>Caddy kommt standardmäßig nicht mit dem Cloudflare DNS-Plugin, Sie müssen es selbst installieren.</p>
+
+                <p>Es gibt zwei Hauptmethoden:</p>
+                <ol>
+                    <li>Verwendung von <code>xcaddy</code> - CLI-Tool zum Erstellen Ihres eigenen Caddy-Builds</li>
+                    <li>Herunterladen vorgefertigter Binärdateien von Caddys Download-Seite</li>
+                    <li>Verwendung von Ansible zum Herunterladen und Installieren von Caddy mit Plugins</li>
+                </ol>
+
+                <h3>CloudFlare API-Token erhalten</h3>
+                <p>Nach der Installation von Caddy mit Cloudflare DNS-Plugin müssen wir ein Cloudflare API-Token abrufen. Stellen Sie sicher, dass ein DNS-Eintrag (A- oder CNAME-Eintrag) auf Ihren Zielknoten zeigt. Gehen Sie dann zu My Profile > API Tokens und klicken Sie bei API Tokens auf "Create Token".</p>
+
+                <h3>Caddy neu konfigurieren, um Cloudflare DNS für Zertifikatserstellung zu verwenden</h3>
+                <p>Erstellen Sie eine Umgebungsvariablen-Datei (wie <code>.env</code>), bedenken Sie, dass diese Datei Geheimnisse enthält und nicht öffentlich zugänglich sein sollte.</p>
+
+                <p>Wir empfehlen, dass Sie die Geheimnisdatei am folgenden Ort erstellen: <code>/etc/caddy/.secrets.env</code>.</p>
+
+                <pre><code>CLOUDFLARE_API_TOKEN=&lt;cloudflare api token&gt;</code></pre>
+
+                <p>Aus Sicherheitsgründen empfehlen wir, Berechtigungen auf <code>0600</code> zu setzen (nur Besitzer kann die Datei lesen oder schreiben).</p>
+
+                <pre><code># Besitz der `.secrets.env` Datei auf `caddy` Systembenutzer setzen
+sudo chown caddy:caddy /etc/caddy/.secrets.env
+
+# Lese-Schreibberechtigungen nur für Besitzer setzen - den `caddy` Systembenutzer
+sudo chmod 0600 /etc/caddy/.secrets.env</code></pre>
+
+                <p>Sie können einen <code>tls</code> Block zu Ihrem <code>Caddyfile</code> hinzufügen, unter dem <code>&lt;domain&gt;</code> Block Ihrer Panel-Konfiguration:</p>
+
+                <pre><code>&lt;domain&gt; {
+# ...
+
+tls {
+    dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+}
+}</code></pre>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="mounts_guide.html" class="nav-button prev">Mounts verwenden</a>
+                <a href="php_upgrade.html" class="nav-button next">PHP aktualisieren</a>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
+
+

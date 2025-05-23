@@ -1,0 +1,224 @@
+﻿<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germando Docs - Docker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Germando Logo" class="logo">
+                    <h2>Germando Docs</h2>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">Theme wechseln</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Willkommen</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Panel</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="getting_started.html">Erste Schritte</a></li>
+                            <li><a href="webserver.html">Webserver-Konfiguration</a></li>
+                            <li><a href="panel_setup.html">Panel-Einrichtung</a></li>
+                            <li><a href="optional_config.html">Optionale Konfiguration</a></li>
+                            <li><a href="updating_panel.html">Panel aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Erweitert</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="advanced_setup.html">Redis</a></li>
+                            <li><a href="advanced_setup.html">MySQL</a></li>
+                            <li><a href="artisan_commands.html">Artisan-Befehle</a></li>
+                            <li><a href="docker.html" class="active">Docker</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Wings</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="wings_installation.html">Wings installieren</a></li>
+                            <li><a href="wings_configuration.html">ZusÃ¤tzliche Konfiguration</a></li>
+                            <li><a href="wings_updating.html">Wings aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Anleitungen</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="docker_guide.html">Docker installieren</a></li>
+                            <li><a href="mounts_guide.html">Mounts verwenden</a></li>
+                            <li><a href="ssl_guide.html">SSL-Zertifikate erstellen</a></li>
+                            <li><a href="php_upgrade.html">PHP aktualisieren</a></li>
+                            <li><a href="database_hosts.html">Datenbank-Hosts</a></li>
+                            <li><a href="uninstalling.html">Deinstallation</a></li>
+                            <li><a href="easypanel.html">Easypanel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="troubleshooting.html">Fehlerbehebung</a></li>
+                    <li><a href="comparison.html">Vergleich</a></li>
+                    <li><a href="glossary.html">Glossar</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1>Docker</h1>
+            <p>Germando bietet vorgefertigte Deutsche Docker-Images über GitHub Packages an. <code>ghcr.io/flimanda/germando-panel:latest</code> ist die aktuelle neueste Version, und <code>ghcr.io/flimanda/germando-panel:main</code> wird automatisch aus dem aktuellen main-Branch erstellt. Die Bereitstellung des Panels in Docker ist noch in Arbeit. Obwohl der Plan ist, Docker zur bevorzugten Installationsmethode zu machen, empfehlen wir derzeit die Standard-Bereitstellungsanweisungen.</p>
+            <p>Diese Anleitung erfordert Docker CE. (Docker Compose ist seit v2 in der Docker CLI enthalten. Docker Compose v1 wird nicht unterstützt.) Anweisungen zur Installation und Konfiguration von Docker finden Sie im Installationshandbuch.</p>
+
+            <h2>Grundlagen</h2>
+            <p>Die einfachste Bereitstellungsmethode ist die Verwendung der Standard-<code>compose.yml</code>-Datei.</p>
+            <p>Diese Konfiguration enthält einen integrierten Webserver, der automatisch SSL-Zertifikate erhält, wenn Sie über HTTPS bereitstellen. Für die Datenbank wird angenommen, dass Sie SQLite verwenden möchten (oder einen externen Datenbankserver haben, den Sie über den Installer konfigurieren können). Es wird auch angenommen, dass Sie den Filesystem-Treiber für Cache, Filesystem oder Datenbanktreiber für Session und Datenbanktreiber für Queue verwenden möchten (oder einen externen Redis-Server haben, den Sie über den Installer konfigurieren können). Wenn Sie andere in Docker integrierte Optionen verwenden möchten, siehe Erweiterte Optionen.</p>
+
+            <h3>compose.yml erstellen</h3>
+            <p><code>compose.yml</code></p>
+            <pre><code>services:
+  panel:
+    image: ghcr.io/flimanda/germando-panel:latest
+    restart: always
+    networks:
+      - default
+    ports:
+      - "80:80"
+      - "443:443"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - pelican-data:/pelican-data
+      - pelican-logs:/var/www/html/storage/logs
+    environment:
+      XDG_DATA_HOME: /pelican-data
+      APP_URL: "http://localhost"
+      ADMIN_EMAIL: "USEYOUROWNEMAILHERE@example.com"
+
+volumes:
+  pelican-data:
+  pelican-logs:
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16</code></pre>
+
+            <h3>Erforderliche Umgebungsvariablen setzen</h3>
+            <p>Setzen Sie <code>APP_URL</code> auf die Basis-URL, unter der Ihr Panel erreichbar sein wird, einschließlich des Protokolls (<code>https://</code> oder <code>http://</code>) und des Ports.</p>
+            <p>Beachten Sie, dass Caddy, der integrierte Webserver, eine 308-Weiterleitung für alle Anfragen auf Port 80 bereitstellt, wenn <code>APP_URL</code> mit <code>https://</code> beginnt. Wenn Ihre endgültige Website über HTTPS erreichbar sein wird, aber TLS (SSL) von einem Upstream-Server wie einem Reverse-Proxy verarbeitet und beendet wird, müssen Sie eine benutzerdefinierte Caddyfile verwenden.</p>
+            <p>Setzen Sie <code>ADMIN_EMAIL</code> auf Ihre E-Mail-Adresse. Caddy wird diese E-Mail-Adresse verwenden, um ein LetsEncrypt SSL-Zertifikat zu generieren, wenn Sie über HTTPS bereitstellen.</p>
+            <p>Schließen und speichern Sie nun die Änderungen an <code>compose.yml</code>.</p>
+
+            <h3>Starten</h3>
+            <p>Führen Sie im Verzeichnis, in dem sich die Compose-Datei befindet, folgenden Befehl aus:</p>
+            <pre><code>docker compose up -d</code></pre>
+
+            <h3>Verschlüsselungsschlüssel sichern</h3>
+            <p>Beim ersten Start des Containers wird ein <code>APP_KEY</code> generiert, der als Verschlüsselungsschlüssel verwendet wird. Dieser wird automatisch gespeichert, aber Sie sollten eine Kopie an einem sicheren Ort aufbewahren, falls Sie ihn später benötigen.</p>
+            <pre><code>docker compose logs panel | grep 'Generated app key:'</code></pre>
+
+            <h3>Installation</h3>
+            <p>Öffnen Sie den Installer in Ihrem Browser unter <code>APP_URL/installer</code>, um die Einrichtung des Panels abzuschließen.</p>
+            <div class="alert alert-info">
+                <strong>Hinweis</strong> Beim ersten Start des Containers nach der Installation oder Aktualisierung werden Datenbankmigrationen angewendet, was einige Minuten dauern kann. Das Panel ist während dieses Vorgangs nicht zugänglich.
+            </div>
+
+            <h3>Sinnvolle Treiber-Standardwerte:</h3>
+            <ul>
+                <li>Cache-Treiber: <code>Filesystem</code></li>
+                <li>Datenbanktreiber: <code>SQLite</code></li>
+                <li>Queue-Treiber: <code>Database</code></li>
+                <li>Session-Treiber: <code>Filesystem</code></li>
+            </ul>
+            <p>Für andere Konfigurationen wie UI-Optionen, CAPTCHA, E-Mail, Backups und OAuth gehen Sie zum Einstellungsmenü im Admin-Panel.</p>
+
+            <h3>Stoppen</h3>
+            <p>Das Panel wird automatisch neu gestartet, wenn der Container abstürzt oder der Host neu startet. Wenn Sie das Panel aus irgendeinem Grund nicht-destruktiv stoppen müssen, navigieren Sie zurück zum Verzeichnis mit <code>compose.yml</code> und führen Sie aus:</p>
+            <pre><code>docker compose down</code></pre>
+
+            <h3>Deinstallation</h3>
+            <p>Um das Panel zu deinstallieren, navigieren Sie zum Verzeichnis mit <code>compose.yml</code> und führen Sie aus:</p>
+            <pre><code>docker compose down -v</code></pre>
+            <div class="alert alert-danger">
+                <strong>Achtung</strong> Dies wird das Panel und alle zugehörigen Daten einschließlich der SQLite-Datenbank und Ihres Verschlüsselungsschlüssels dauerhaft löschen.
+            </div>
+
+            <h2>Erweiterte Optionen</h2>
+            <h3>Benutzerdefinierte Caddyfile</h3>
+            <p>Die Standard-Caddyfile funktioniert für Standardinstallationen. Wenn Sie die Konfiguration des integrierten Webservers bearbeiten müssen, z.B. um ihn hinter einem Reverse-Proxy zu platzieren, der TLS beendet, können Sie dies tun, indem Sie eine <code>Caddyfile</code> auf dem Host an <code>/etc/caddy/Caddyfile</code> im Container binden.</p>
+            <p>Dieses Beispiel geht davon aus, dass sich eine <code>Caddyfile</code> im gleichen Verzeichnis wie die <code>compose.yml</code>-Datei befindet.</p>
+            <p><code>compose.yml</code></p>
+            <pre><code>services:
+  panel:
+    image: ghcr.io/flimanda/germando-panel:latest
+    restart: always
+    networks:
+      - default
+    ports:
+      - "80:80"
+      - "443:443"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - pelican-data:/pelican-data
+      - pelican-logs:/var/www/html/storage/logs
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    environment:
+      XDG_DATA_HOME: /pelican-data
+      APP_URL: "http://localhost"
+      ADMIN_EMAIL: "USEYOUROWNEMAILHERE@example.com"
+
+volumes:
+  pelican-data:
+  pelican-logs:
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16</code></pre>
+            <p>Ein Beispiel für eine Caddyfile zum Hosten des Panels hinter einem Reverse-Proxy ist unten dargestellt. Es macht das Panel auf Port 80 unabhängig vom Host-Header verfügbar und versucht nicht, ein TLS-Zertifikat zu erhalten. <code>[UPSTREAM IP]</code> muss durch die IP-Adresse des Reverse-Proxys ersetzt werden.</p>
+            <p><code>Caddyfile</code></p>
+            <pre><code>{
+    admin off
+    servers {
+        trusted_proxies static [UPSTREAM IP]
+    }
+}
+
+:80 {
+    root * /var/www/html/public
+    encode gzip
+
+    php_fastcgi 127.0.0.1:9000
+    file_server
+}</code></pre>
+            <div class="alert alert-info">
+                <strong>Hinweis</strong> Wenn die trusted-Direktive nicht gesetzt oder falsch konfiguriert ist, schlagen Datei-Uploads fehl. Häufig, wenn der Reverse-Proxy außerhalb von Docker läuft, stimmt die IP-Adresse nicht mit <code>127.0.0.1</code> überein, sondern mit einer Docker-Bridge-Schnittstelle oder docker0.
+            </div>
+
+            <h3>Datei-Upload-Limits erhöhen</h3>
+            <p>Das Standard-Datei-Upload-Limit beträgt 2MB. Um dieses Limit zu erhöhen, modifizieren Sie die Caddyfile wie folgt:</p>
+            <p><code>Caddyfile</code></p>
+            <pre><code>&lt;domain&gt; {
+    ...
+
+    encode gzip
+
+    php_fastcgi 127.0.0.1:9000 {
+        env PHP_VALUE "upload_max_filesize = 256M
+                       post_max_size = 256M"
+    }
+    file_server
+}</code></pre>
+          <div class="nav-buttons">
+            <a href="artisan_commands.html" class="nav-button prev">Artisan-Befehle</a>
+            <a href="wings_installation.html" class="nav-button next">Wings installieren</a>
+          </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

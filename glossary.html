@@ -1,0 +1,255 @@
+﻿<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germando Docs - Glossar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Germando Logo" class="logo">
+                    <h2>Germando Docs</h2>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">Theme wechseln</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Willkommen</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Panel</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="getting_started.html">Erste Schritte</a></li>
+                            <li><a href="webserver.html">Webserver-Konfiguration</a></li>
+                            <li><a href="panel_setup.html">Panel-Einrichtung</a></li>
+                            <li><a href="optional_config.html">Optionale Konfiguration</a></li>
+                            <li><a href="updating_panel.html">Panel aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Erweitert</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="advanced_setup.html">Redis</a></li>
+                            <li><a href="advanced_setup.html">MySQL</a></li>
+                            <li><a href="artisan_commands.html">Artisan-Befehle</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Wings</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="wings_installation.html">Wings installieren</a></li>
+                            <li><a href="wings_configuration.html">ZusÃ¤tzliche Konfiguration</a></li>
+                            <li><a href="wings_updating.html">Wings aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Anleitungen</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="docker_guide.html">Docker installieren</a></li>
+                            <li><a href="mounts_guide.html">Mounts verwenden</a></li>
+                            <li><a href="ssl_guide.html">SSL-Zertifikate erstellen</a></li>
+                            <li><a href="php_upgrade.html">PHP aktualisieren</a></li>
+                            <li><a href="database_hosts.html">Datenbank-Hosts</a></li>
+                            <li><a href="uninstalling.html">Deinstallation</a></li>
+                            <li><a href="easypanel.html">Easypanel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="troubleshooting.html">Fehlerbehebung</a></li>
+                    <li><a href="comparison.html">Vergleich</a></li>
+                    <li><a href="glossary.html" class="active">Glossar</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1>Glossar</h1>
+
+            <div class="section">
+                <h2>Was ist ...?</h2>
+                
+                <div class="glossary-grid">
+                    <div class="glossary-item">
+                        <h3>Panel</h3>
+                        <p>Webanwendung, die mit Wings kommuniziert und Ihnen ermöglicht, Ihre Server zu steuern.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Wings</h3>
+                        <p>Anwendung, die Ihnen sichere Kontrolle über Ihre Server und über Ihr Panel bietet.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Node</h3>
+                        <p>Maschine (Computer oder Server), die Wings ausführt, um sich mit dem Panel zu verbinden.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Server</h3>
+                        <p>Instanz eines Containers, der von Wings verwaltet wird.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Docker</h3>
+                        <p>Plattform, die es Ihnen ermöglicht, Server in isolierten Containern auszuführen.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Docker Image</h3>
+                        <p>Datei, die Bibliotheken, Abhängigkeiten, Dateien usw. enthält, die zum Ausführen eines Containers benötigt werden.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Container</h3>
+                        <p>Virtualisierte Umgebung, in der Ihre Server laufen.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Egg</h3>
+                        <p>Datei, die konfiguriert, wie ein Docker Image ausgeführt wird.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Yolk</h3>
+                        <p>Kuratierte Sammlung von (Kern-) Docker Images, die mit Pelican's Eggs verwendet werden können.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>API</h3>
+                        <p>Application Programming Interface - ermöglicht es externen Anwendungen, programmatisch mit dem Panel zu interagieren.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Allocation</h3>
+                        <p>IP-Adresse und Port-Kombination, die einem Server für Netzwerkkonnektivität zugewiesen wird.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Mount</h3>
+                        <p>Eine Möglichkeit, Verzeichnisse vom Host-System in Server-Container zu teilen.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Database Host</h3>
+                        <p>Externer Datenbankserver, der verwendet werden kann, um Datenbanken für Spielserver zu erstellen.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Schedule</h3>
+                        <p>Automatisierte Aufgaben, die auf Servern in bestimmten Intervallen ausgeführt werden können.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Backup</h3>
+                        <p>Komprimiertes Archiv von Serverdateien, das später wiederhergestellt werden kann.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Subuser</h3>
+                        <p>Zusätzliches Benutzerkonto mit begrenzten Berechtigungen für den Zugriff auf einen bestimmten Server.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Nest</h3>
+                        <p>Sammlung verwandter Eggs, die zusammengefasst sind (in Pelican zugunsten von Tags veraltet).</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Location</h3>
+                        <p>Logische Gruppierung von Knoten am gleichen geografischen oder Netzwerkstandort (in Pelican zugunsten von Tags veraltet).</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>SFTP</h3>
+                        <p>Secure File Transfer Protocol - ermöglicht sichere Dateiverwaltung für Server.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Console</h3>
+                        <p>Echtzeit-Interface, das Server-Ausgaben anzeigt und Befehlseingaben ermöglicht.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Environment Variables</h3>
+                        <p>Konfigurationswerte, die an Server weitergegeben werden können, um ihr Verhalten anzupassen.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Resource Limits</h3>
+                        <p>Beschränkungen für CPU-, Speicher- und Festplattenutzung für einzelne Server.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>Startup Command</h3>
+                        <p>Der Befehl, der ausgeführt wird, wenn ein Server gestartet wird.</p>
+                    </div>
+
+                    <div class="glossary-item">
+                        <h3>File Manager</h3>
+                        <p>Webbasierte Schnittstelle für die Verwaltung von Serverdateien direkt über das Panel.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Grundlegendes Setup-Diagramm</h2>
+                
+                <div class="setup-diagram">
+                    <div class="diagram-container">
+                        <div class="diagram-section">
+                            <h4>Benutzer</h4>
+                            <div class="diagram-box user-box">
+                                <p>Greift über Webbrowser auf Panel zu</p>
+                            </div>
+                        </div>
+
+                        <div class="diagram-arrow">↓</div>
+
+                        <div class="diagram-section">
+                            <h4>Panel</h4>
+                            <div class="diagram-box panel-box">
+                                <p>Web-Interface für die Serververwaltung</p>
+                                <p>Kommuniziert mit Wings über API</p>
+                            </div>
+                        </div>
+
+                        <div class="diagram-arrow">↓</div>
+
+                        <div class="diagram-section">
+                            <h4>Wings (Node)</h4>
+                            <div class="diagram-box wings-box">
+                                <p>Daemon, der Docker-Container verwaltet</p>
+                                <p>Läuft auf jeder Servermaschine</p>
+                            </div>
+                        </div>
+
+                        <div class="diagram-arrow">↓</div>
+
+                        <div class="diagram-section">
+                            <h4>Docker Container</h4>
+                            <div class="diagram-box container-box">
+                                <p>Isolierte Umgebungen für Spielserver</p>
+                                <p>Jeder Server läuft in seinem eigenen Container</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setup-explanation">
+                    <h4>Wie es funktioniert:</h4>
+                    <ol>
+                        <li><strong>Benutzer</strong> greift über einen Webbrowser auf das Panel zu</li>
+                        <li><strong>Panel</strong> bietet die Web-Oberfläche und verwaltet Benutzerauthentifizierung, Server-Konfigurationen und Einstellungen</li>
+                        <li><strong>Wings</strong> erhält Befehle vom Panel und verwaltet die tatsächlichen Server-Container</li>
+                        <li><strong>Docker Container</strong> bieten isolierte Umgebungen, in denen jeder Spielserver unabhängig läuft</li>
+                    </ol>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
+

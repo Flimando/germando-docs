@@ -1,0 +1,364 @@
+﻿<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germando Docs - Vergleich</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Germando Logo" class="logo">
+                    <h2>Germando Docs</h2>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">Theme wechseln</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Willkommen</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Panel</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="getting_started.html">Erste Schritte</a></li>
+                            <li><a href="webserver.html">Webserver-Konfiguration</a></li>
+                            <li><a href="panel_setup.html">Panel-Einrichtung</a></li>
+                            <li><a href="optional_config.html">Optionale Konfiguration</a></li>
+                            <li><a href="updating_panel.html">Panel aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Erweitert</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="advanced_setup.html">Redis</a></li>
+                            <li><a href="advanced_setup.html">MySQL</a></li>
+                            <li><a href="artisan_commands.html">Artisan-Befehle</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Wings</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="wings_installation.html">Wings installieren</a></li>
+                            <li><a href="wings_configuration.html">ZusÃ¤tzliche Konfiguration</a></li>
+                            <li><a href="wings_updating.html">Wings aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Anleitungen</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="docker_guide.html">Docker installieren</a></li>
+                            <li><a href="mounts_guide.html">Mounts verwenden</a></li>
+                            <li><a href="ssl_guide.html">SSL-Zertifikate erstellen</a></li>
+                            <li><a href="php_upgrade.html">PHP aktualisieren</a></li>
+                            <li><a href="database_hosts.html">Datenbank-Hosts</a></li>
+                            <li><a href="uninstalling.html">Deinstallation</a></li>
+                            <li><a href="easypanel.html">Easypanel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="troubleshooting.html">Fehlerbehebung</a></li>
+                    <li><a href="comparison.html" class="active">Vergleich</a></li>
+                    <li><a href="glossary.html">Glossar</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1>Vergleich</h1>
+            
+            <p>Germando ist ein Fork von Pelican. Pelican ist wiederum ein Fork von Pterodactyl. Jedoch hat Pelican jetzt viele Verbesserungen gegenüber dem Original!</p>
+
+            <div class="alert alert-info">
+                <strong>Info:</strong> Möchten Sie diese Änderungen in Aktion sehen? Schauen Sie sich unsere Demo (English) an!
+            </div>
+
+            <div class="section">
+                <h2>Feature-Verbesserungen</h2>
+                
+                <div class="feature-grid">
+                    <div class="feature-category">
+                        <h3>Allgemein</h3>
+                        <ul>
+                            <li>📅 Geplant First Party Plugins</li>
+                            <li>📅 Geplant First Party Themes</li>
+                            <li>📅 Geplant Allocations überarbeiten</li>
+                            <li>✅ Erledigt Webhooks</li>
+                            <li>✅ Erledigt Rollen & Berechtigungen für Admins</li>
+                            <li>✅ Erledigt Nests & Locations durch Tags ersetzen</li>
+                            <li>✅ Erledigt Konfigurationsoption für Binär-Prefix (MiB/GiB)</li>
+                            <li>✅ Erledigt Verbesserte Einstellungsseite</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-category">
+                        <h3>Frontend</h3>
+                        <ul>
+                            <li>🔄 In Arbeit Lokalisiertes Frontend</li>
+                            <li>✅ Erledigt Benutzer-Avatare</li>
+                            <li>✅ Erledigt Neuschreibung des Client-Bereichs in Filament</li>
+                            <li>✅ Erledigt Wechsel von Webpack zu Vite</li>
+                            <li>✅ Erledigt Neuschreibung des Admin-Bereichs in Filament</li>
+                            <li>✅ Erledigt Zeitzone pro Benutzer konfigurierbar</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-category">
+                        <h3>API</h3>
+                        <ul>
+                            <li>✅ Erledigt Integrierte API-Dokumentation</li>
+                            <li>✅ Erledigt Application API für Database Hosts</li>
+                            <li>✅ Erledigt Application API für Server-Transfers</li>
+                            <li>✅ Erledigt Application API für Mounts</li>
+                            <li>✅ Erledigt Einheitliche Benutzer-Transformers</li>
+                            <li>✅ Erledigt <code>oom_disabled</code> zu <code>oom_killer</code> umbenannt</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-category">
+                        <h3>Authentifizierung</h3>
+                        <ul>
+                            <li>✅ Erledigt Google reCAPTCHA durch Cloudflare Turnstile ersetzt</li>
+                            <li>✅ Erledigt OAuth</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-category">
+                        <h3>Setup</h3>
+                        <ul>
+                            <li>✅ Erledigt Offizielle Unterstützung für PostgreSQL</li>
+                            <li>✅ Erledigt Dockerisierte Installation</li>
+                            <li>✅ Erledigt Einfacherer Installationsprozess (Web-Installer)</li>
+                            <li>✅ Erledigt SQLite als Panel-Datenbank</li>
+                            <li>✅ Erledigt "Ordentliche" Unterstützung für MariaDB als Panel-Datenbank (dedizierter Treiber)</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-category">
+                        <h3>Server</h3>
+                        <ul>
+                            <li>📅 Geplant Server-Sortierung</li>
+                            <li>✅ Erledigt IPv6-Unterstützung für Allocations</li>
+                            <li>✅ Erledigt Benutzerdefinierte Docker-Labels für Server-Container</li>
+                            <li>✅ Erledigt "Dateien löschen" Zeitplan-Task</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-category">
+                        <h3>Node</h3>
+                        <ul>
+                            <li>📅 Geplant Effektivere Wings-Festplattenkontingent-Durchsetzung</li>
+                            <li>✅ Erledigt Node-Besitz (Nodes zu Rollen zuweisen)</li>
+                            <li>✅ Erledigt Node-Ressourcenstatistiken</li>
+                            <li>✅ Erledigt CPU-Limit für Nodes</li>
+                            <li>✅ Erledigt Alias für SFTP-Adresse</li>
+                            <li>✅ Erledigt Automatische Bereinigung hängender Docker-Images</li>
+                            <li>✅ Erledigt <code>-1</code> Überallokation behoben</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-category">
+                        <h3>Eggs</h3>
+                        <ul>
+                            <li>📅 Geplant Einfachere Egg-Installation</li>
+                            <li>📅 Geplant Egg-Format zu YAML ändern</li>
+                            <li>✅ Erledigt Sortierbare Egg-Variablen</li>
+                            <li>✅ Erledigt Mehrere Eggs auf einmal importieren</li>
+                            <li>✅ Erledigt Einfachere Egg-Aktualisierung (Verwendung von <code>update_url</code>)</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-category">
+                        <h3>Hub</h3>
+                        <ul>
+                            <li>📅 Geplant Marktplatz für Eggs</li>
+                            <li>📅 Geplant Marktplatz für Plugins</li>
+                            <li>📅 Geplant Marktplatz für Themes</li>
+                            <li>✅ Erledigt Offene Finanzen</li>
+                            <li>✅ Erledigt Support-Tickets</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Vergleich mit Konkurrenten</h2>
+                
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Pelican</th>
+                                <th>Pterodactyl</th>
+                                <th>PufferPanel</th>
+                                <th>Crafty Controller</th>
+                                <th>Multicraft</th>
+                                <th>TCAdmin</th>
+                                <th>AMP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Dateimanager</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>Geplante Aufgaben</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>Kostenlos und Open Source</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                            </tr>
+                            <tr>
+                                <td>Mehrsprachig</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>Datenbankverwaltung</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>OAuth</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                            </tr>
+                            <tr>
+                                <td>Webhooks</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                            </tr>
+                            <tr>
+                                <td>Rollen & Berechtigungen</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>Ankündigungen</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                            </tr>
+                            <tr>
+                                <td>Themes</td>
+                                <td>📅</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                            </tr>
+                            <tr>
+                                <td>Plugins</td>
+                                <td>📅</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                            </tr>
+                            <tr>
+                                <td>Selbst-Update</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                            </tr>
+                            <tr>
+                                <td>Captcha Login</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                            </tr>
+                            <tr>
+                                <td>Remote-Backups</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Feature-Informationen</h3>
+                <ul>
+                    <li>Alle Features mit 📅 sind geplant.</li>
+                    <li>Plugins können alle Features hinzufügen, die Pelican standardmäßig nicht hat.</li>
+                    <li>Diese Werte werden nicht ständig aktualisiert, und Konkurrenten haben möglicherweise einige der mit einem Kreuz markierten Features in ihrer neuesten Version implementiert.</li>
+                </ul>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="troubleshooting.html" class="nav-button prev">Fehlerbehebung</a>
+                <a href="faq.html" class="nav-button next">FAQ</a>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
+

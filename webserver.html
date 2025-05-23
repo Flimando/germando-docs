@@ -1,0 +1,319 @@
+﻿<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germando Docs - Webserver Konfiguration</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Germando Logo" class="logo">
+                    <h2>Germando Docs</h2>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">Theme wechseln</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Willkommen</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Panel</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="getting_started.html">Erste Schritte</a></li>
+                            <li><a href="webserver.html" class="active">Webserver-Konfiguration</a></li>
+                            <li><a href="panel_setup.html">Panel-Einrichtung</a></li>
+                            <li><a href="optional_config.html">Optionale Konfiguration</a></li>
+                            <li><a href="updating_panel.html">Panel aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Erweitert</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="advanced_setup.html">Redis</a></li>
+                            <li><a href="advanced_setup.html">MySQL</a></li>
+                            <li><a href="artisan_commands.html">Artisan-Befehle</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Wings</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="wings_installation.html">Wings installieren</a></li>
+                            <li><a href="wings_configuration.html">ZusÃ¤tzliche Konfiguration</a></li>
+                            <li><a href="wings_updating.html">Wings aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Anleitungen</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="docker_guide.html">Docker installieren</a></li>
+                            <li><a href="mounts_guide.html">Mounts verwenden</a></li>
+                            <li><a href="ssl_guide.html">SSL-Zertifikate erstellen</a></li>
+                            <li><a href="php_upgrade.html">PHP aktualisieren</a></li>
+                            <li><a href="database_hosts.html">Datenbank-Hosts</a></li>
+                            <li><a href="uninstalling.html">Deinstallation</a></li>
+                            <li><a href="easypanel.html">Easypanel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="troubleshooting.html">Fehlerbehebung</a></li>
+                    <li><a href="comparison.html">Vergleich</a></li>
+                    <li><a href="glossary.html">Glossar</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1>Webserver Konfiguration</h1>
+            
+            <div class="alert alert-info">
+                <strong>Info:</strong> Wenn Sie die SSL (https) Konfiguration verwenden, müssen Sie SSL-Zertifikate erstellen, andernfalls schlägt der Webserver fehl. Siehe die Dokumentation zur Erstellung von SSL-Zertifikaten, um diese vor dem Fortfahren zu erstellen.
+            </div>
+
+            <h2>NGINX</h2>
+            
+            <h3>PHP & FPM</h3>
+            <p>Wenn Sie nicht PHP 8.4 verwenden, müssen Sie die Konfigurationsdatei bearbeiten, um auf die richtige PHP FPM Socket zu verweisen.</p>
+            <p>Die Zeile ist hervorgehoben unten.</p>
+            <p>Zuerst entfernen Sie die Standard-NGINX-Konfiguration.</p>
+            
+            <pre><code>sudo rm /etc/nginx/sites-enabled/default</code></pre>
+            
+            <p>Jetzt sollten Sie den Inhalt der Datei unten kopieren, <code>&lt;domain&gt;</code> durch Ihren Domainnamen oder die verwendete IP ersetzen und die Datei in <code>/etc/nginx/sites-available/</code> als <code>pelican.conf</code> abgelegt werden.</p>
+
+            <h3>NGINX HTTPS Konfiguration</h3>
+            <div class="alert alert-warning">
+                <strong>Warnung:</strong> IPs können nicht mit SSL verwendet werden.
+            </div>
+            
+            <p><code>/etc/nginx/sites-available/pelican.conf</code></p>
+            <pre><code>server_tokens off;
+
+server {
+    listen 80;
+    server_name &lt;domain&gt;;
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name &lt;domain&gt;;
+
+    root /var/www/pelican/public;
+    index index.php;
+
+    access_log /var/log/nginx/pelican.app-access.log;
+    error_log  /var/log/nginx/pelican.app-error.log error;
+
+    # allow larger file uploads and longer script runtimes
+    client_max_body_size 100m;
+    client_body_timeout 120s;
+
+    sendfile off;
+
+    ssl_certificate /etc/letsencrypt/live/&lt;domain&gt;/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/&lt;domain&gt;/privkey.pem;
+    ssl_session_cache shared:SSL:10m;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384";
+    ssl_prefer_server_ciphers on;
+
+    # See https://hstspreload.org/ before uncommenting the line below.
+    # add_header Strict-Transport-Security "max-age=15768000; preload;";
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+    add_header X-Robots-Tag none;
+    add_header Content-Security-Policy "frame-ancestors 'self'";
+    add_header X-Frame-Options DENY;
+    add_header Referrer-Policy same-origin;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param PHP_VALUE "upload_max_filesize = 100M \n post_max_size=100M";
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param HTTP_PROXY "";
+        fastcgi_intercept_errors off;
+        fastcgi_buffer_size 16k;
+        fastcgi_buffers 4 16k;
+        fastcgi_connect_timeout 300;
+        fastcgi_send_timeout 300;
+        fastcgi_read_timeout 300;
+        include /etc/nginx/fastcgi_params;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}</code></pre>
+
+            <h3>Konfiguration aktivieren</h3>
+            <p>Der letzte Schritt ist die Aktivierung Ihrer NGINX-Konfiguration und der Neustart.</p>
+            
+            <pre><code>sudo ln -s /etc/nginx/sites-available/pelican.conf /etc/nginx/sites-enabled/pelican.conf</code></pre>
+            
+            <p>Sie müssen NGINX neu starten, um die neue Konfigurationsdatei zu laden.</p>
+            
+            <pre><code>sudo systemctl restart nginx</code></pre>
+
+            <h3>NGINX HTTP Konfiguration</h3>
+            
+            <p><code>/etc/nginx/sites-available/pelican.conf</code></p>
+            <pre><code>server {
+    listen 80;
+    server_name &lt;domain&gt;;
+
+    root /var/www/pelican/public;
+    index index.html index.htm index.php;
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    access_log off;
+    error_log  /var/log/nginx/pelican.app-error.log error;
+
+    # allow larger file uploads and longer script runtimes
+    client_max_body_size 100m;
+    client_body_timeout 120s;
+
+    sendfile off;
+
+    location ~ \.php$ {
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param PHP_VALUE "upload_max_filesize = 100M \n post_max_size=100M";
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param HTTP_PROXY "";
+        fastcgi_intercept_errors off;
+        fastcgi_buffer_size 16k;
+        fastcgi_buffers 4 16k;
+        fastcgi_connect_timeout 300;
+        fastcgi_send_timeout 300;
+        fastcgi_read_timeout 300;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}</code></pre>
+
+            <h3>Konfiguration aktivieren</h3>
+            <p>Der letzte Schritt ist die Aktivierung Ihrer NGINX-Konfiguration und der Neustart.</p>
+            <pre><code>sudo ln -s /etc/nginx/sites-available/pelican.conf /etc/nginx/sites-enabled/pelican.conf</code></pre>
+            <p>Sie müssen NGINX neu starten, um die neue Konfigurationsdatei zu laden.</p>
+            <pre><code>sudo systemctl restart nginx</code></pre>
+
+            <h2>APACHE</h2>
+            <h3>Apache https Konfiguration</h3>
+            <div class="alert alert-warning">
+                <strong>Warnung:</strong> IPs können nicht mit SSL verwendet werden.
+            </div>
+            
+            <p><code>/etc/apache2/sites-available/pelican.conf</code></p>
+            <pre><code>&lt;VirtualHost *:80&gt;
+    ServerName &lt;domain&gt;
+    
+    RewriteEngine On
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L] 
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:443&gt;
+    ServerName &lt;domain&gt;
+    DocumentRoot "/var/www/pelican/public"
+
+    AllowEncodedSlashes On
+    
+    php_value upload_max_filesize 100M
+    php_value post_max_size 100M
+
+    &lt;Directory "/var/www/pelican/public"&gt;
+        Require all granted
+        AllowOverride all
+    &lt;/Directory&gt;
+
+    SSLEngine on
+    SSLCertificateFile /etc/letsencrypt/live/&lt;domain&gt;/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/&lt;domain&gt;/privkey.pem
+&lt;/VirtualHost&gt;</code></pre>
+
+            <h3>Konfiguration aktivieren</h3>
+            <p>Nachdem Sie die obige Datei erstellt haben, führen Sie einfach die folgenden Befehle aus.</p>
+            
+            <div class="alert alert-warning">
+                <strong>PHP & FPM</strong><br>
+                Wenn Sie nicht PHP 8.4 verwenden, müssen Sie den Befehl bearbeiten, um das richtige Modul zu aktivieren.<br><br>
+                Die Zeile ist unten hervorgehoben.
+            </div>
+            
+            <pre><code>sudo a2ensite pelican.conf
+sudo a2enmod rewrite
+sudo a2enmod php8.4
+sudo systemctl restart apache2</code></pre>
+
+            <h3>Apache HTTP Konfiguration</h3>
+            
+            <p><code>/etc/apache2/sites-available/pelican.conf</code></p>
+            <pre><code>&lt;VirtualHost *:80&gt;
+    ServerName &lt;domain&gt;
+    DocumentRoot "/var/www/pelican/public"
+    
+    AllowEncodedSlashes On
+    
+    php_value upload_max_filesize 100M
+    php_value post_max_size 100M
+
+    &lt;Directory "/var/www/pelican/public"&gt;
+        Require all granted
+        AllowOverride all
+    &lt;/Directory&gt;
+&lt;/VirtualHost&gt;</code></pre>
+
+            <h3>Konfiguration aktivieren</h3>
+            <p>Nachdem Sie die obige Datei erstellt haben, führen Sie einfach die folgenden Befehle aus.</p>
+            
+            <div class="alert alert-warning">
+                <strong>PHP & FPM</strong><br>
+                Wenn Sie nicht PHP 8.4 verwenden, müssen Sie den Befehl bearbeiten, um das richtige Modul zu aktivieren.<br><br>
+                Die Zeile ist unten hervorgehoben.
+            </div>
+            
+            <pre><code>sudo a2ensite pelican.conf
+sudo a2enmod rewrite
+sudo a2enmod php8.4</code></pre>
+            <p>Sie müssen Apache neu starten, um die neue Konfigurationsdatei zu laden.</p>
+            <pre><code>sudo systemctl restart apache2</code></pre>
+
+            <h2>Konfiguration aktivieren</h2>
+            <p>Der letzte Schritt ist die Aktivierung Ihrer NGINX-Konfiguration und der Neustart.</p>
+            
+            <pre><code>sudo ln -s /etc/nginx/sites-available/pelican.conf /etc/nginx/sites-enabled/pelican.conf</code></pre>
+            
+            <p>Sie müssen NGINX neu starten, um die neue Konfigurationsdatei zu laden.</p>
+            
+            <pre><code>sudo systemctl restart nginx</code></pre>
+
+        <div class="nav-buttons">
+            <a href="getting_started.html" class="nav-button prev">Erste Schritte</a>
+            <a href="panel_setup.html" class="nav-button next">Panel-Einrichtung</a>
+        </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

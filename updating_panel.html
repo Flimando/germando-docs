@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germando Docs - Panel aktualisieren</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Germando Logo" class="logo">
+                    <h2>Germando Docs</h2>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">Theme wechseln</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Willkommen</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Panel</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="getting_started.html">Erste Schritte</a></li>
+                            <li><a href="webserver.html">Webserver-Konfiguration</a></li>
+                            <li><a href="panel_setup.html">Panel-Einrichtung</a></li>
+                            <li><a href="optional_config.html">Optionale Konfiguration</a></li>
+                            <li><a href="updating_panel.html" class="active">Panel aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Erweitert</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="advanced_setup.html">Redis</a></li>
+                            <li><a href="advanced_setup.html">MySQL</a></li>
+                            <li><a href="artisan_commands.html">Artisan-Befehle</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Wings</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="wings_installation.html">Wings installieren</a></li>
+                            <li><a href="wings_configuration.html">ZusÃ¤tzliche Konfiguration</a></li>
+                            <li><a href="wings_updating.html">Wings aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Anleitungen</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="docker_guide.html">Docker installieren</a></li>
+                            <li><a href="mounts_guide.html">Mounts verwenden</a></li>
+                            <li><a href="ssl_guide.html">SSL-Zertifikate erstellen</a></li>
+                            <li><a href="php_upgrade.html">PHP aktualisieren</a></li>
+                            <li><a href="database_hosts.html">Datenbank-Hosts</a></li>
+                            <li><a href="uninstalling.html">Deinstallation</a></li>
+                            <li><a href="easypanel.html">Easypanel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="troubleshooting.html">Fehlerbehebung</a></li>
+                    <li><a href="comparison.html">Vergleich</a></li>
+                    <li><a href="glossary.html">Glossar</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1>Panel aktualisieren</h1>
+            <p>Das Panel kann einfach mit einem einzigen Befehl aktualisiert werden. Dieser Befehl lädt die neueste Version herunter und führt alle erforderlichen Datenbankmigrationen durch.</p>
+            <pre><code>php artisan p:upgrade</code></pre>
+
+            <h2>Versionsanforderungen</h2>
+            <p>Jede Version des Germando Panels hat auch eine entsprechende Mindestversion von Wings, die für den Betrieb erforderlich ist.</p>
+            <p>Bitte sehen Sie sich die Tabelle unten an, um zu sehen, wie diese Versionen übereinstimmen. In den meisten Fällen sollte Ihre Basis-Wings-Version mit der Ihres Panels übereinstimmen.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Panel Version</th>
+                        <th>Wings Version</th>
+                        <th>Unterstützt</th>
+                        <th>PHP Version</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1.x</td>
+                        <td>1.x</td>
+                        <td>✅︎</td>
+                        <td>8.2/8.3/8.4</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Wartungsmodus aktivieren</h2>
+            <p>Wann immer Sie ein Update durchführen, sollten Sie Ihr Panel in den Wartungsmodus versetzen. Dies verhindert, dass Benutzer auf unerwartete Fehler stoßen.</p>
+            <pre><code>cd /var/www/pelican
+php artisan down</code></pre>
+
+            <div class="alert alert-warning">
+                <strong>Warnung</strong> Wenn Sie von &lt; 1.0.0-beta13 aktualisieren, verwenden Sie bitte das untenstehende Skript! Dies stellt sicher, dass alle kürzlich gelöschten Dateien entfernt werden.
+            </div>
+            <p>Hinweis: Dieses Skript ist experimentell... ES WIRD KEIN MYSQL-DUMP FÜR IHRE DATENBANK ERSTELLEN! Hinweis: Dieses Skript führt alle untenstehenden Befehle für Sie aus.</p>
+            <p>Was das Skript macht: Es sucht nach <code>.env</code> und wenn es existiert, holt es <code>DB_CONNECTION</code>, um zu sehen, ob Sie mysql/mariadb/sqlite verwenden. Bei sqlite wird die <code>database.sqlite</code> in einen Backup-Ordner zusammen mit der env kopiert. Sobald sie in den Backup-Ordner kopiert wurden, löscht es alles außer dem Backup-Ordner im angegebenen Installationsverzeichnis.</p>
+            <p>Führt fort mit dem Herunterladen des neuesten Releases, extrahiert es in das Installationsverzeichnis, setzt einige Berechtigungen, führt composer install aus, stellt die alte sqlite-Datenbank und <code>.env</code> wieder her. Führt Filament Optimize aus, aktualisiert Migrationen, fragt Sie nach dem Webserver für den Dateibesitzer (<code>www-data/apache/nginx</code>), startet die Queue neu, und Voilà! Wenn Sie Probleme haben, kontaktieren Sie uns bitte auf Discord!</p>
+            <p>Wenn Sie das Skript nicht verwenden und es manuell machen möchten, können Sie alles außer der <code>.env</code> und der sqlite-Datenbankdatei löschen, falls Sie sqlite verwenden. Folgen Sie dann dem Standard-Aktualisierungsprozess unten.</p>
+            <pre><code>sudo bash -c "$(curl -fsSL https://pelican.dev/updatePanel.sh)"</code></pre>
+
+            <h2>Update herunterladen</h2>
+            <p>Der erste Schritt im Aktualisierungsprozess ist das Herunterladen der neuen Panel-Dateien von GitHub. Der Befehl unten lädt das Release-Archiv für die neueste Version von Germando herunter, speichert es im aktuellen Verzeichnis und entpackt das Archiv automatisch in Ihren aktuellen Ordner.</p>
+            <pre><code>curl -L https://github.com/flimanda/germando-panel/releases/latest/download/panel.tar.gz  | sudo tar -xzv</code></pre>
+            <p>Sobald das Archiv heruntergeladen und extrahiert wurde, müssen wir die korrekten Berechtigungen für die Cache- und Storage-Verzeichnisse setzen, um webserverbezogene Fehler zu vermeiden.</p>
+            <pre><code>sudo chmod -R 755 storage/* bootstrap/cache</code></pre>
+
+            <h2>Abhängigkeiten aktualisieren</h2>
+            <pre><code>sudo COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader</code></pre>
+            <div class="alert alert-info">
+                <strong>Info</strong> Auch wenn composer Ihnen mitteilt, dass Sie veraltete Abhängigkeiten haben, führen Sie <code>composer update</code> nicht aus!
+            </div>
+
+            <h2>Storage-Symlinks erstellen</h2>
+            <pre><code>php artisan storage:link</code></pre>
+
+            <h2>Kompilierten Template-Cache löschen</h2>
+            <p>Sie sollten auch den kompilierten Template-Cache löschen, um sicherzustellen, dass neue und modifizierte Templates für Benutzer korrekt angezeigt werden.</p>
+            <pre><code>php artisan view:clear
+php artisan config:clear</code></pre>
+
+            <h2>Komponenten cachen</h2>
+            <p>Um sicherzustellen, dass Ihr Panel schneller lädt, sollten Sie Filament-Komponenten cachen.</p>
+            <pre><code>php artisan filament:optimize</code></pre>
+
+            <h2>Datenbank aktualisieren</h2>
+            <p>Sie müssen auch Ihr Datenbankschema aktualisieren. Die Ausführung des Befehls unten aktualisiert das Schema und stellt sicher, dass die Standard-Eggs, die wir mitliefern, auf dem neuesten Stand sind (und fügt alle neuen hinzu, die wir haben könnten). Denken Sie daran, bearbeiten Sie niemals die Core-Eggs, die wir mitliefern! Sie werden durch diesen Aktualisierungsprozess überschrieben.</p>
+            <pre><code>php artisan migrate --seed --force</code></pre>
+
+            <h2>Berechtigungen setzen</h2>
+            <p>Der letzte Schritt ist das Setzen des richtigen Besitzes der Dateien. In den meisten Fällen ist dies <code>www-data</code>, kann aber von System zu System variieren — manchmal ist es <code>nginx</code>, <code>caddy</code>, <code>apache</code> oder sogar <code>nobody</code>.</p>
+            <h3>NGINX/Apache</h3>
+            <h3>Rocky Linux NGINX</h3>
+            <h3>Rocky Linux Apache</h3>
+            <pre><code>sudo chown -R www-data:www-data /var/www/pelican</code></pre>
+
+            <h2>Queue-Worker neu starten</h2>
+            <p>Nach jedem Update sollten Sie den Queue-Worker neu starten.</p>
+            <pre><code>php artisan queue:restart</code></pre>
+
+            <h2>Wartungsmodus beenden</h2>
+            <p>Jetzt, da alles aktualisiert wurde, müssen Sie den Wartungsmodus beenden.</p>
+            <pre><code>php artisan up</code></pre>
+            <div class="nav-buttons">
+                <a href="optional_config.html" class="nav-button prev">Optionale Konfiguration</a>
+                <a href="advanced_setup.html" class="nav-button next">Erweiterte Einrichtung</a>
+            </div>
+        </main>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,257 @@
+﻿<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germando Docs - Easypanel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="logo.svg" alt="Germando Logo" class="logo">
+                    <h2>Germando Docs</h2>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">Theme wechseln</button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Willkommen</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Panel</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="getting_started.html">Erste Schritte</a></li>
+                            <li><a href="webserver.html">Webserver-Konfiguration</a></li>
+                            <li><a href="panel_setup.html">Panel-Einrichtung</a></li>
+                            <li><a href="optional_config.html">Optionale Konfiguration</a></li>
+                            <li><a href="updating_panel.html">Panel aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Erweitert</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="advanced_setup.html">Redis</a></li>
+                            <li><a href="advanced_setup.html">MySQL</a></li>
+                            <li><a href="artisan_commands.html">Artisan-Befehle</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Wings</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="wings_installation.html">Wings installieren</a></li>
+                            <li><a href="wings_configuration.html">ZusÃ¤tzliche Konfiguration</a></li>
+                            <li><a href="wings_updating.html">Wings aktualisieren</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Anleitungen</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="docker_guide.html">Docker installieren</a></li>
+                            <li><a href="mounts_guide.html">Mounts verwenden</a></li>
+                            <li><a href="ssl_guide.html">SSL-Zertifikate erstellen</a></li>
+                            <li><a href="php_upgrade.html">PHP aktualisieren</a></li>
+                            <li><a href="database_hosts.html">Datenbank-Hosts</a></li>
+                            <li><a href="uninstalling.html">Deinstallation</a></li>
+                            <li><a href="easypanel.html" class="active">Easypanel</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="troubleshooting.html">Fehlerbehebung</a></li>
+                    <li><a href="comparison.html">Vergleich</a></li>
+                    <li><a href="glossary.html">Glossar</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <h1>Easypanel</h1>
+            
+            <p>Germando Panel ist als vorgefertigtes Docker-Image über GitHub Packages verfügbar. Sie können entweder <code>ghcr.io/flimanda/germando-panel:latest</code> für die neueste stabile Version oder <code>ghcr.io/flimanda/germando-panel:main</code> verwenden, das automatisch aus dem main Branch erstellt wird. Diese Anleitung führt Sie durch das Deployment von Germando Panel mit EasyPanel's benutzerdefinierten Service-Templates.</p>
+
+            <h2>Basis-Setup mit SQLite</h2>
+            <p>Für ein Basis-Setup mit SQLite als Datenbank können Sie das folgende Service-Template verwenden:</p>
+            
+            <pre><code>{
+  "services": [
+    {
+      "type": "app",
+      "data": {
+        "serviceName": "panel",
+        "source": {
+          "type": "image",
+          "image": "ghcr.io/pelican-dev/panel:latest"
+        },
+        "env": "XDG_DATA_HOME: /pelican-data\nAPP_URL: \"https://$(EASYPANEL_DOMAIN)\"\nCADDY_URL: \"http://$(EASYPANEL_DOMAIN)\"",
+        "domains": [
+          {
+            "host": "$(EASYPANEL_DOMAIN)",
+            "port": 80
+          }
+        ],
+        "mounts": [
+          {
+            "type": "volume",
+            "name": "pelican-data",
+            "mountPath": "/pelican-data"
+          },
+          {
+            "type": "volume",
+            "name": "pelican-logs",
+            "mountPath": "/var/www/html/storage/logs"
+          },
+          {
+            "type": "file",
+            "content": "{\n    admin off\n    auto_https off\n}\n\n{$CADDY_URL} {\n    root * /var/www/html/public\n    encode gzip\n\n    php_fastcgi 127.0.0.1:9000\n    file_server\n}",
+            "mountPath": "/etc/caddy/Caddyfile"
+          }
+        ]
+      }
+    }
+  ]
+}</code></pre>
+
+            <h2>Erweiterte Konfiguration mit MariaDB und Redis</h2>
+            <p>Für eine erweiterte Konfiguration mit MariaDB und Redis verwenden Sie dieses Template:</p>
+            
+            <pre><code>{
+  "services": [
+    {
+      "type": "app",
+      "data": {
+        "serviceName": "panel",
+        "source": {
+          "type": "image",
+          "image": "ghcr.io/pelican-dev/panel:latest"
+        },
+        "env": "XDG_DATA_HOME: /pelican-data\nAPP_URL: \"https://$(EASYPANEL_DOMAIN)\"\nCADDY_URL: \"http://$(EASYPANEL_DOMAIN)\"",
+        "domains": [
+          {
+            "host": "$(EASYPANEL_DOMAIN)",
+            "port": 80
+          }
+        ],
+        "mounts": [
+          {
+            "type": "volume",
+            "name": "pelican-data",
+            "mountPath": "/pelican-data"
+          },
+          {
+            "type": "volume",
+            "name": "pelican-logs",
+            "mountPath": "/var/www/html/storage/logs"
+          },
+          {
+            "type": "file",
+            "content": "{\n    admin off\n    auto_https off\n}\n\n{$CADDY_URL} {\n    root * /var/www/html/public\n    encode gzip\n\n    php_fastcgi 127.0.0.1:9000\n    file_server\n}",
+            "mountPath": "/etc/caddy/Caddyfile"
+          }
+        ]
+      }
+    },
+    {
+      "type": "mariadb",
+      "data": {
+        "serviceName": "panel-db",
+        "password": "51e2a4d6e98b7c57f9b6"
+      }
+    },
+    {
+      "type": "redis",
+      "data": {
+        "serviceName": "panel-redis",
+        "password": "69cbf211602afa32e194"
+      }
+    }
+  ]
+}</code></pre>
+
+            <h2>Installationsschritte</h2>
+            <ol>
+                <li>Erstellen Sie in EasyPanel einen neuen Service mit der Option <strong>"Create From Schema"</strong> am unteren Rand beim Erstellen eines neuen Services</li>
+                <li>Fügen Sie entweder das Basis- oder das erweiterte Template-JSON ein</li>
+                <li>Klicken Sie auf "Create" um das Panel zu deployen</li>
+            </ol>
+
+            <h2>Domain-Konfiguration aktualisieren</h2>
+            <p>Wenn Sie Ihre Domain nach der ersten Bereitstellung aktualisieren müssen:</p>
+            
+            <ol>
+                <li>Aktualisieren Sie die Domain in EasyPanel's Domain-Einstellungen</li>
+                <li>Aktualisieren Sie die Umgebungsvariablen in Ihrer Service-Konfiguration:</li>
+            </ol>
+            
+            <pre><code>APP_URL: "https://panel.example.com"
+CADDY_URL: "http://panel.example.com"</code></pre>
+            
+            <div class="alert alert-info">
+                <strong>Hinweis:</strong> Behalten Sie <code>CADDY_URL</code> als <code>http://</code> bei, da EasyPanel SSL-Zertifikate und Reverse Proxy handhabt.
+            </div>
+            
+            <ol start="3">
+                <li>Starten Sie den Service neu, um die Änderungen zu übernehmen</li>
+            </ol>
+
+            <h2>Nach der Installation</h2>
+            <p>Nach dem Deployment:</p>
+            
+            <ol>
+                <li>Greifen Sie auf den Installer unter <code>https://panel.example.com/installer</code> zu</li>
+                <li>Schließen Sie den Installationsprozess ab</li>
+                <li>Für die erweiterte Konfiguration konfigurieren Sie folgendes in den Panel-Einstellungen:
+                    <ul>
+                        <li><strong>Datenbank:</strong> Verwenden Sie die MariaDB-Anmeldedaten</li>
+                        <li><strong>Cache und Queue:</strong> Verwenden Sie die Redis-Anmeldedaten</li>
+                    </ul>
+                </li>
+            </ol>
+            
+            <div class="alert alert-info">
+                <strong>Hinweis:</strong> Beim ersten Start des Containers nach der Installation oder einem Update werden Datenbank-Migrationen angewendet, was einige Minuten dauern kann. Das Panel ist während dieses Prozesses nicht erreichbar.
+            </div>
+
+            <h2>Vorteile von EasyPanel</h2>
+            <ul>
+                <li><strong>Einfache Bereitstellung:</strong> Ein-Klick-Deployment mit vorgefertigten Templates</li>
+                <li><strong>Automatische SSL:</strong> EasyPanel handhabt SSL-Zertifikate automatisch</li>
+                <li><strong>Skalierbarkeit:</strong> Einfache Skalierung je nach Bedarf</li>
+                <li><strong>Überwachung:</strong> Integrierte Überwachung und Logging</li>
+                <li><strong>Backups:</strong> Automatische Volume-Backups</li>
+            </ul>
+
+            <h2>Fehlerbehebung</h2>
+            
+            <h3>Häufige Probleme</h3>
+            
+            <h4>Container startet nicht</h4>
+            <ul>
+                <li>Überprüfen Sie die Logs in EasyPanel</li>
+                <li>Stellen Sie sicher, dass alle Umgebungsvariablen korrekt gesetzt sind</li>
+                <li>Verifizieren Sie das JSON-Template auf Syntaxfehler</li>
+            </ul>
+            
+            <h4>Domain nicht erreichbar</h4>
+            <ul>
+                <li>Überprüfen Sie die Domain-Konfiguration in EasyPanel</li>
+                <li>Stellen Sie sicher, dass die DNS-Einträge korrekt sind</li>
+                <li>Warten Sie auf die SSL-Zertifikat-Generierung (kann bis zu 10 Minuten dauern)</li>
+            </ul>
+            
+            <h4>Datenbank-Verbindungsfehler</h4>
+            <ul>
+                <li>Überprüfen Sie die MariaDB/Redis Service-Namen</li>
+                <li>Stellen Sie sicher, dass die Passwörter übereinstimmen</li>
+                <li>Verifizieren Sie, dass alle Services gestartet sind</li>
+            </ul>
+
+            <div class="nav-buttons">
+                <a href="uninstalling.html" class="nav-button prev">Deinstallation</a>
+                <a href="troubleshooting.html" class="nav-button next">Fehlerbehebung</a>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
+
