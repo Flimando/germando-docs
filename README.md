@@ -58,7 +58,7 @@ Mit Germando können deutsche Benutzer das mächtige Server-Management von Pelic
 
 1. **Repository klonen:**
    ```bash
-   git clone https://github.com/[dein-username]/germando-docs.git
+   git clone https://github.com/Flimando/germando-docs.git
    cd germando-docs
    ```
 
